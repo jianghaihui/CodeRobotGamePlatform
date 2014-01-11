@@ -1,0 +1,348 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<link href="MySnkes.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" language="javascript">
+/*
+ 贪吃蛇
+ */
+/*
+ 全局变量
+ */
+//通过ID获取元素的方法
+var $ = document.getElementById;
+var timeID;
+var Game = {
+    //游戏状态(stop,run,dead)
+    gameState:"stop",
+    //移动状态有"向上(up)","向下(down)","向左(left)","向右(right)",
+    moveState:"left",
+    lastMoveState:"left",
+    foodLeft:null,
+    foodTop:null,
+    step:1,
+    score:0,
+    //蛇数组
+    snake:[],
+    //是否吃食物
+    hasEat:false,
+    //移动速度
+    speed:500,
+    //食物
+    food:null,
+    //创建食物
+    initFood:function () {
+        Game.food = document.createElement("div");
+        Game.food.style.position = "absolute";
+        Game.food.style.left = Game.randomNum("left") + "px"
+        Game.food.style.top = Game.randomNum("top") + "px";
+        Game.food.style.backgroundColor = "Green";
+        Game.foodLeft = parseInt(Game.food.style.left);
+        Game.foodTop = parseInt(Game.food.style.top);
+        Game.food.style.width = "10px";
+        Game.food.style.height = "10px";
+
+        var gameInterface = document.getElementById("gameInterface");
+        gameInterface.appendChild(Game.food);
+
+    },
+    //根据方向返回不同的数据
+    randomNum:function (way) {
+        //假如为top返回5-495并且相隔10
+        if (way == "top") {
+            return parseInt(parseInt(Math.random() * 49) + "5");
+        }
+        //为left返回5-595相隔10的数
+        else {
+            return parseInt(parseInt(Math.random() * 59) + "5");
+        }
+
+    },
+    //初始化蛇
+    oneSnakePoint:function (t, l) {
+        var div = document.createElement("div");
+        div.style.width = "10px";
+        div.style.height = "10px";
+        div.style.backgroundColor = "Red";
+        div.style.position = "absolute";
+        div.style.top = t + "px";
+        div.style.left = l + "px";
+        return div;
+    },
+    snakeInit:function () {
+        for (var i = 0; i < 3; i++) {
+            var div = Game.oneSnakePoint(245, 285 + i * 10);
+            Game.snake.push(div);
+            var gameInterface = document.getElementById("gameInterface");
+            gameInterface.appendChild(div);
+        }
+    },
+    //移动
+    move:function () {
+        //假如游戏状态为移动时
+        if (Game.gameState == "run") {
+            if (Game.snake[0].style.top == "5px" || Game.snake[0].style.top == "495px" || Game.snake[0].style.left == "5px" || Game.snake[0].style.left == "595px") {
+                Game.gameState = "dead";
+                alert("你失败了");
+            }
+            else {
+                //--------吃食物---------------------------
+                var top0 = parseInt(Game.snake[0].style.top);
+                var left0 = parseInt(Game.snake[0].style.left);
+                if (((top0 == Game.foodTop || top0 == Game.foodTop + 10) && left0 == Game.foodLeft) || ((left0 == Game.foodLeft || left0 == Game.foodLeft + 10) && top0 == Game.foodTop)) {
+                    document.getElementById("gameInterface").removeChild(Game.food);
+                    //获取最后一个节点
+                    Game.initFood();
+                    Game.score += 10;
+                    document.getElementById("socket").innerHTML = Game.score + "分";
+                    //标记吃了
+                    Game.hasEat = true;
+                }
+                //------------------------------------------
+                //假如运行状态为上
+                if (Game.moveState == "up") {
+                    var div1 = [];
+                    for (var i = 0; i < Game.snake.length; i++) {
+                        //假如是第一个节点
+                        if (i == 0) {
+                            div1[0] = Game.snake[i].style.top;
+                            div1[1] = Game.snake[i].style.left;
+                            Game.snake[i].style.top = (parseInt(Game.snake[i].style.top) - 10) + "px";
+
+                        }
+                        //除第一个节点外
+                        else {
+                            var div2 = [];
+                            div2[0] = Game.snake[i].style.top;
+                            div2[1] = Game.snake[i].style.left;
+                            Game.snake[i].style.top = div1[0];
+                            Game.snake[i].style.left = div1[1];
+                            div1 = div2;
+                        }
+                    }
+
+                }
+                //向下
+                else if (Game.moveState == "down") {
+                    var div1 = [];
+                    for (var i = 0; i < Game.snake.length; i++) {
+                        //假如是第一个节点
+                        if (i == 0) {
+                            div1[0] = Game.snake[i].style.top;
+                            div1[1] = Game.snake[i].style.left;
+                            Game.snake[i].style.top = (parseInt(Game.snake[i].style.top) + 10) + "px";
+
+                        }
+                        //假如是第一个节点
+                        else {
+                            var div2 = [];
+                            div2[0] = Game.snake[i].style.top;
+                            div2[1] = Game.snake[i].style.left;
+                            Game.snake[i].style.top = div1[0];
+                            Game.snake[i].style.left = div1[1];
+                            div1 = div2;
+                        }
+                    }
+                }
+                //向左
+                else if (Game.moveState == "left") {
+                    var div1 = [];
+                    for (var i = 0; i < Game.snake.length; i++) {
+                        if (i == 0) {
+                            div1[0] = Game.snake[i].style.top;
+                            div1[1] = Game.snake[i].style.left;
+                            Game.snake[i].style.left = (parseInt(Game.snake[i].style.left) - 10) + "px";
+
+                        }
+                        else {
+                            var div2 = [];
+                            div2[0] = Game.snake[i].style.top;
+                            div2[1] = Game.snake[i].style.left;
+                            Game.snake[i].style.top = div1[0];
+                            Game.snake[i].style.left = div1[1];
+                            div1 = div2;
+                        }
+                    }
+                }
+                // 向右
+                else if (Game.moveState == "right") {
+                    var div1 = [];
+                    for (var i = 0; i < Game.snake.length; i++) {
+                        if (i == 0) {
+                            div1[0] = Game.snake[i].style.top;
+                            div1[1] = Game.snake[i].style.left;
+                            Game.snake[i].style.left = (parseInt(Game.snake[i].style.left) + 10) + "px";
+
+                        }
+                        else {
+                            var div2 = [];
+                            div2[0] = Game.snake[i].style.top;
+                            div2[1] = Game.snake[i].style.left;
+                            Game.snake[i].style.top = div1[0];
+                            Game.snake[i].style.left = div1[1];
+                            div1 = div2;
+                        }
+                    }
+                }
+                if (Game.hasEat) {
+                    var newSnakePoint = Game.oneSnakePoint(parseInt(div1[0]), parseInt(div1[1]));
+                    Game.snake.push(newSnakePoint);
+                    var gameInterface = document.getElementById("gameInterface");
+                    gameInterface.appendChild(newSnakePoint);
+                    Game.hasEat = false;
+
+                }
+            }
+        }
+        //游戏状态为停止
+        else if (Game.gameState == "stop") {
+
+        }
+        //游戏状态为失败
+        else if (Game.gameState == "dead") {
+
+        }
+
+    },
+    //开始游戏
+    startGame:function () {
+        Game.initFood();
+        Game.snakeInit();
+        document.onkeydown = function (e) {
+            //向上
+            if (event.keyCode == 38) {
+                if (Game.moveState == "down" || Game.moveState == "up") {
+                    return false;
+                }
+                else {
+                    Game.lastMoveState = Game.moveState;
+                    Game.moveState = "up";
+                }
+                return false;
+            }
+            //向左
+            else if (event.keyCode == 37) {
+                if (Game.moveState == "right" || Game.moveState == "left") {
+                    return false;
+                }
+                else {
+                    Game.lastMoveState = Game.moveState;
+                    Game.moveState = "left";
+                }
+                return false;
+            }
+            //向右
+            else if (event.keyCode == 39) {
+                if (Game.moveState == "left" || Game.moveState == "right") {
+                    return false;
+                }
+                else {
+                    Game.lastMoveState = Game.moveState;
+                    Game.moveState = "right";
+                }
+                return false;
+            }
+            //向下
+            else if (event.keyCode == 40) {
+                if (Game.moveState == "up" || Game.moveState == "down") {
+                    return false;
+                }
+                else {
+                    Game.lastMoveState = Game.moveState;
+                    Game.moveState = "down";
+                }
+                return false;
+            }
+            //空格
+            else if (event.keyCode == 32) {
+                //假如游戏为停止状态
+                if (Game.gameState == "stop") {
+                    Game.gameState = "run";
+                    timeID = setInterval(Game.move, Game.speed);
+                    return false;
+                }
+                //假如游戏为运行状态
+                else if (Game.gameState == "run") {
+                    Game.gameState = "stop";
+                    clearInterval(timeID);
+                    return false;
+                }
+                //假如游戏为失败状态
+                else if (Game.gameState == "dead") {
+                    Game.gameState = "stop";
+                    for (var i = 0; i < Game.snake.length; i++) {
+                        document.getElementById("gameInterface").removeChild(Game.snake[i]);
+                    }
+                    Game.snake = [];
+                    Game.snakeInit();
+                    return false;
+                }
+            }
+        }
+    }
+}
+
+/*
+ 初始化调用
+ */
+window.onload = Game.startGame;
+
+/****************************************
+ 调节速度
+ *****************************************/
+//鼠标是否按下
+var mouseOn = false;
+var mouseX = "";
+document.onmousemove = mouseMove;
+document.onmouseup = mouseUp;
+//鼠标按下
+function mouseDown() {
+    mouseOn = true;
+    mouseX = event.clientX;
+}
+//鼠标抬起
+function mouseUp() {
+    mouseOn = false;
+
+}
+
+//鼠标移动
+function mouseMove() {
+    if (mouseOn) {
+        var cutX = parseInt(event.clientX) - parseInt(mouseX);
+        var blockLeft = parseInt(document.getElementById("block").style.left);
+        if ((blockLeft + cutX) > 613 && (blockLeft + cutX) < 748) {
+            document.getElementById("block").style.left = (blockLeft + cutX) + "px";
+            mouseX = event.clientX;
+            Game.speed = 500 - 2 * ((parseInt(document.getElementById("block").style.left) - 613));
+            document.getElementById("speed").innerHTML = Game.speed;
+            if (Game.gameState == "run") {
+                clearInterval(timeID);
+                timeID = setInterval(Game.move, Game.speed);
+            }
+        }
+    }
+}
+</script>
+</head>
+<body style=" margin:0px,0px,0px,0px; padding:0px,0px,0px,0px">
+<div id="Interface" style=" position:absolute; left:0px; top:0px; width:1024px">
+    <div id="gameInterface" style=" width:600px; height:500px; float:left; border:solid 5px #999999">
+
+    </div>
+    <div id="gameInfor" style=" width:180px; height:500px; float:left; background-color:#CFD4C5">
+        <div style=" color:#FF3622; font-size:24px; text-align:center">贪吃蛇</div>
+        <div style=" margin-top:10px">得分:<span id="socket" style=" margin-left:20px">0分</span></div>
+        <div style=" margin-top:10px">速度:<span id="speed" style=" margin-left:20px">500</span>
+
+            <div style=" border-top:solid 3px red; margin-top:10px; width:150px "></div>
+        </div>
+        <div id="block"
+             style=" position:absolute; width:15px; height:17px; background-color:#000000; cursor:hand; top: 88px; left: 613px;"
+             onmousedown="mouseDown()"></div>
+    </div>
+</div>
+</body>
+</html>

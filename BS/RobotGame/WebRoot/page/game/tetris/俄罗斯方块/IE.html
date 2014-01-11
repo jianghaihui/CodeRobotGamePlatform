@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312"/>
+<title>俄罗斯方块 JavaScrtip版</title>
+<style>
+
+    body {
+        text-align: center
+    }
+
+    .g {
+        width: 20px;
+        height: 20px;
+        margin-left: 1px;
+        margin-bottom: 1px;
+        background-color: #FFFFFF;
+        float: left;
+    }
+</style>
+<script language="JavaScript" type="text/javascript">
+/*
+ 俄罗斯方块
+
+ 作者:张晓龙
+
+ E-mail:challs82@gmail.com
+
+ qq:24675749
+
+ 完成时间:2008/1/18
+
+ 写这个主要是练习算法,和简单的程序结构,希望能对大家有帮助
+ */
+var kuanjx = new Array();
+var kuan = new Array([8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]);
+var wj = new Array();
+wj[0] = new Array([
+    [0, 0, 0, 0],
+    [2, 2, 2, 0],
+    [2, 0, 0, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 2, 2, 0],
+    [0, 0, 2, 0],
+    [0, 0, 2, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 0, 0, 0],
+    [0, 0, 0, 2],
+    [0, 2, 2, 2],
+    [0, 0, 0, 0]
+], [
+    [0, 2, 0, 0],
+    [0, 2, 0, 0],
+    [0, 2, 2, 0],
+    [0, 0, 0, 0]
+]);
+wj[1] = new Array([
+    [0, 3, 0, 0],
+    [3, 3, 3, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 3, 0, 0],
+    [0, 3, 3, 0],
+    [0, 3, 0, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 0, 0, 0],
+    [3, 3, 3, 0],
+    [0, 3, 0, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 3, 0, 0],
+    [3, 3, 0, 0],
+    [0, 3, 0, 0],
+    [0, 0, 0, 0]
+]);
+wj[2] = new Array([
+    [0, 0, 0, 0],
+    [0, 1, 1, 0],
+    [0, 1, 1, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 1, 1, 0],
+    [0, 1, 1, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 0, 0, 0],
+    [0, 1, 1, 0],
+    [0, 1, 1, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 0, 0, 0],
+    [0, 1, 1, 0],
+    [0, 1, 1, 0],
+    [0, 0, 0, 0]
+]);
+wj[3] = new Array([
+    [0, 0, 0, 0],
+    [0, 4, 4, 4],
+    [0, 0, 0, 4],
+    [0, 0, 0, 0]
+], [
+    [0, 0, 4, 0],
+    [0, 0, 4, 0],
+    [0, 4, 4, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 0, 0, 0],
+    [4, 0, 0, 0],
+    [4, 4, 4, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 4, 4, 0],
+    [0, 4, 0, 0],
+    [0, 4, 0, 0],
+    [0, 0, 0, 0]
+]);
+wj[4] = new Array([
+    [0, 5, 0, 0],
+    [0, 5, 5, 0],
+    [0, 0, 5, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 5, 5, 0],
+    [5, 5, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 5, 0, 0],
+    [0, 5, 5, 0],
+    [0, 0, 5, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 5, 5, 0],
+    [5, 5, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]
+]);
+wj[4] = new Array([
+    [0, 0, 6, 0],
+    [0, 6, 6, 0],
+    [0, 6, 0, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 6, 6, 0],
+    [0, 0, 6, 6],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 0, 6, 0],
+    [0, 6, 6, 0],
+    [0, 6, 0, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 6, 6, 0],
+    [0, 0, 6, 6],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]
+]);
+wj[5] = new Array([
+    [0, 0, 7, 0],
+    [0, 0, 7, 0],
+    [0, 0, 7, 0],
+    [0, 0, 7, 0]
+], [
+    [0, 0, 0, 0],
+    [7, 7, 7, 7],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 0, 7, 0],
+    [0, 0, 7, 0],
+    [0, 0, 7, 0],
+    [0, 0, 7, 0]
+], [
+    [0, 0, 0, 0],
+    [7, 7, 7, 7],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]
+]);
+var color = new Array("#ffffff", "#0000ff", "#FF0000", "#FF00FF", "#00FF00", "#FFFF00", "#00FFFF", "#660066", "#000000")
+var x = 4;
+var y = 0;
+var dqzt = 1;
+var kkzt = 1;
+var nkkzt = 2;
+var fs = 0;
+var zd = 0;
+function xiayige() {
+    kkzt = nkkzt;
+    nkkzt = Math.floor(Math.random() * 6)
+    for (var i = 0; i < wj[kkzt][dqzt].length; i++) {
+        for (var u = 0; u < wj[kkzt][dqzt][i].length; u++) {
+            document.getElementById('g' + (i + 5) + '_' + (12 + u)).style.backgroundColor = color[0];
+            if (wj[nkkzt][dqzt][i][u] != 0) {
+                document.getElementById('g' + (i + 5) + '_' + (12 + u)).style.backgroundColor = color[wj[nkkzt][dqzt][i][u]];
+            }
+        }
+    }
+    anliu();
+}
+function pzjc(a, c) {//(1 = ←) (2 = →) (3 = ↓)
+    var jc = 1;
+    var b = '';
+    if (a == 4) {
+        var e = c;
+    } else {
+        var e = dqzt;
+    }
+    for (var i = 0; i < wj[kkzt][e].length; i++) {
+        for (var u = 0; u < wj[kkzt][e][i].length; u++) {
+            if (wj[kkzt][e][i][u] != 0) {
+                if (a == 1) {
+                    if (kuan[y + i][x + u - 1] != 0) {
+                        jc = 0;
+                        break;
+                    }
+                } else if (a == 2) {
+                    if (kuan[y + i][x + u + 1] != 0) {
+                        jc = 0;
+                        break;
+                    }
+                } else if (a == 3) {
+                    if (kuan[y + i + 1][x + u] != 0) {
+                        jc = 0;
+                        break;
+                    }
+                } else if (a == 4) {
+                    if (kuan[y + i][x + u] != 0) {
+                        jc = 0;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    return jc;
+
+}
+function main2(a) {
+    var jc = 1;
+    for (var i = a - 1; i > 1; i--) {
+        jc = 1;
+        for (var u = 0; u < kuan[i].length; u++) {
+            if (kuan[i + 1][u] != 0 && kuan[i + 1][u] != 8) {
+                document.getElementById('g' + (i + 1) + '_' + u).style.backgroundColor = color[0];
+                jc = 0;
+            }
+            if (kuan[i][u] != 0 && kuan[i][u] != 8) {
+                document.getElementById('g' + (i + 1) + '_' + u).style.backgroundColor = color[kuan[i][u]];
+            }
+        }
+        if (jc == 1) break;
+    }
+}
+function main1() {
+    var txt = '';
+    for (var i = 0; i < 20; i++) {
+        for (var u = 0; u < 16; u++) {
+            txt += '<div class="g" id="g' + i + '_' + u + '"></div>';
+        }
+    }
+    document.getElementById('main').innerHTML = txt;
+    for (var i = 0; i < kuan.length; i++) {
+        for (var u = 0; u < kuan[i].length; u++) {
+            if (kuan[i][u] != 0) {
+                document.getElementById('g' + i + '_' + u).style.backgroundColor = color[kuan[i][u]];
+            }
+        }
+    }
+    xiayige();
+    zhidong();
+}
+
+function anliu() {
+    for (var i = 0; i < wj[kkzt][dqzt].length; i++) {
+        for (var u = 0; u < wj[kkzt][dqzt][i].length; u++) {
+            if (wj[kkzt][dqzt][i][u] != 0) {
+                document.getElementById('g' + (y + i) + '_' + (x + u)).style.backgroundColor = color[wj[kkzt][dqzt][i][u]];
+            }
+        }
+    }
+}
+function qinchu() {
+    for (var i = 0; i < wj[kkzt][dqzt].length; i++) {
+        for (var u = 0; u < wj[kkzt][dqzt][i].length; u++) {
+            if (wj[kkzt][dqzt][i][u] != 0) {
+                document.getElementById('g' + (y + i) + '_' + (x + u)).style.backgroundColor = color[0];
+            }
+        }
+    }
+}
+document.onkeydown = kongzhi;
+
+function kongzhi(event) {
+    if (window.event) {
+        var u = window.event.keyCode;
+    } else {
+        var u = event.keyCode;
+    }
+    qinchu();
+    if (u == 37) {
+        if (pzjc(1) == 1) {
+            x--;
+        }
+    } else if (u == 39) {
+        if (pzjc(2) == 1) {
+            x++;
+        }
+    } else if (u == 40) {
+        if (pzjc(3) == 1) {
+            y++;
+        }
+    } else if (u == 32) {
+        var c = dqzt;
+        c++;
+        if (c > 3)c = 0;
+        if (pzjc(4, c) == 1) {
+            dqzt++;
+            if (dqzt > 3)dqzt = 0;
+        }
+    }
+    anliu();
+
+}
+function zhidong() {
+
+    if (pzjc(3) == 1) {
+        qinchu();
+        y++;
+        anliu();
+
+    } else {
+        for (var i = 0; i < wj[kkzt][dqzt].length; i++) {
+            for (var u = 0; u < wj[kkzt][dqzt][i].length; u++) {
+                if (wj[kkzt][dqzt][i][u] != 0) {
+                    kuan[y + i][x + u] = wj[kkzt][dqzt][i][u];
+                }
+            }
+        }
+        chexiao();
+        x = 4;
+        y = 0;
+        xiayige();
+    }
+    zd = setTimeout('zhidong()', 1000);
+}
+function chexiao() {
+    var jc = 1;
+    for (var i = 0; i < kuan.length; i++) {
+        jc = 1;
+        for (var u = 1; u < kuan[i].length - 1; u++) {
+            if (kuan[i][u] == 0 || kuan[i][u] == 8) {
+                jc = 0;
+            }
+        }
+        if (jc == 1) {
+            main2(i);
+            kuan.splice(i, 1);
+            kuan.unshift([8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8]);
+            fs++;
+        }
+    }
+
+}
+
+</script>
+</head>
+<body onLoad="main1()">
+<div style="width:338px; height:auto;" id="main"></div>
+</body>
+</html>

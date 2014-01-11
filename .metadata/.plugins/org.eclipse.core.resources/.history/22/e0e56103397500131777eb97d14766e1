@@ -1,0 +1,17 @@
+package com.xjiang.mine.game.action;
+
+import java.util.Map;
+
+import com.crgp.game.client.Action;
+import com.crgp.game.client.message.ActionMessage;
+
+public class ClickAction extends Action {
+
+	public ClickAction() {
+	}
+
+	@Override
+	public Map<String, String> execute(ActionMessage message) {
+		return null;
+	}
+}

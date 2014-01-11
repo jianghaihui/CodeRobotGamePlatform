@@ -1,0 +1,18 @@
+package com.crgp.robot.action;
+
+import java.util.Map;
+
+import com.crgp.game.client.Action;
+import com.crgp.game.client.message.ActionMessage;
+import com.crgp.robot.BaseRobot;
+
+public class PlayAction extends Action {
+
+	private BaseRobot robot;
+	
+	@Override
+	public Map<String, String> execute(ActionMessage message) throws Exception {
+		return null;
+	}
+
+}

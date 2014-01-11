@@ -1,0 +1,10 @@
+package com.crgp.game.client.message;
+
+public abstract class Message {
+	protected String sourceType;
+	protected String sourceId;
+	protected String targetType;
+	protected String targetId;
+	protected String type;
+	protected String message;
+}

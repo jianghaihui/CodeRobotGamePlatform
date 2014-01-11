@@ -1,0 +1,12 @@
+@charset "utf-8";
+/* CSS Document */
+.fivechess-win-table {
+    border: none;
+    border-collapse: 0;
+    border-spacing: 0;
+    padding: 0;
+}
+
+.icon-fivechess-win {
+    background-image: url(../../../images/fivechess/win.jpg) !important;
+}

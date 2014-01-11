@@ -1,0 +1,136 @@
+package com.xjiang.mine.robot;
+
+import com.crgp.game.client.message.ActionMessage;
+import com.crgp.game.client.message.DataMessage;
+import com.crgp.game.client.message.Message;
+import com.crgp.robot.BaseRobot;
+
+public abstract class MineRobot extends BaseRobot {
+	public static final String GAME_UID = "CRGP-Mine-Game";
+
+	@Override
+	public final synchronized void play(int code) {
+		play();
+	}
+
+	/**
+	 * 每次需要机器人点击一个雷点的时候会调用该方法;<BR>
+	 * 该方法只允许调用一次click；<BR>
+	 * 调用click后执行器会收回机器人的代码执行权限，即click方法后面的代码不会被执行, 等待下一次调用play<BR>
+	 */
+	public abstract void play();
+
+	// -------------------------
+	// ---
+	// ---信号与槽(Signal and Slots)
+	// ---
+	// -------------------------
+	/**
+	 * [SIGNAL]获得宽度值
+	 * 
+	 * @return
+	 */
+	public final int getWidth() {
+		// [TODO 向游戏模块发送请求]
+
+		ActionMessage actionMessage = new ActionMessage(
+				Message.SOURCE_TYPE_ROBOT, UID(), Message.SOURCE_TYPE_GAME,
+				GAME_UID);
+		actionMessage.setActionName("getWidth");
+		actionMessage.setHasReceipt(true);
+
+		DataMessage dataMessage = client.send(actionMessage);
+
+		return Integer.parseInt(dataMessage.getData("width"));
+	}
+
+	/**
+	 * [SIGNAL]获得高度值
+	 * 
+	 * @return
+	 */
+	public final int getHeight() {
+		// [TODO 向游戏模块发送请求]
+
+		ActionMessage actionMessage = new ActionMessage(
+				Message.SOURCE_TYPE_ROBOT, UID(), Message.SOURCE_TYPE_GAME,
+				GAME_UID);
+		actionMessage.setActionName("getHeight");
+		actionMessage.setHasReceipt(true);
+
+		DataMessage dataMessage = client.send(actionMessage);
+
+		return Integer.parseInt(dataMessage.getData("height"));
+	}
+
+	/**
+	 * [SIGNAL]获得地雷总数
+	 * 
+	 * @return
+	 */
+	public final int getMineCount() {
+		// [TODO 向游戏模块发送请求]
+
+		ActionMessage actionMessage = new ActionMessage(
+				Message.SOURCE_TYPE_ROBOT, UID(), Message.SOURCE_TYPE_GAME,
+				GAME_UID);
+		actionMessage.setActionName("getMineCount");
+		actionMessage.setHasReceipt(true);
+
+		DataMessage dataMessage = client.send(actionMessage);
+
+		return Integer.parseInt(dataMessage.getData("mineCount"));
+	}
+
+	/**
+	 * [SIGNAL]点击一个雷点
+	 * 
+	 * @param x
+	 *            横向位置
+	 * @param y
+	 *            纵向位置
+	 */
+	public final void click(int x, int y) {
+		// [TODO 向游戏模块发送请求]
+
+		ActionMessage actionMessage = new ActionMessage(
+				Message.SOURCE_TYPE_ROBOT, UID(), Message.SOURCE_TYPE_GAME,
+				GAME_UID);
+		actionMessage.setActionName("click");
+		actionMessage.setHasReceipt(false);
+
+		client.send(actionMessage);
+	}
+
+	/**
+	 * [SIGNAL]获取所有位置的信息，以二维数组的形式返回
+	 * 
+	 * @return -1:未知,0-N:该位置的值
+	 */
+	public final int[][] getMap() {
+		// [TODO 向游戏模块发送请求]
+		ActionMessage actionMessage = new ActionMessage(
+				Message.SOURCE_TYPE_ROBOT, UID(), Message.SOURCE_TYPE_GAME,
+				GAME_UID);
+		actionMessage.setActionName("getMineCount");
+		actionMessage.setHasReceipt(true);
+
+		DataMessage dataMessage = client.send(actionMessage);
+
+		String tmp1 = dataMessage.getData("map");
+		tmp1 = tmp1.substring(1, tmp1.length() - 1);
+
+		String as1[] = tmp1.split(",");
+		int[][] arrays = new int[as1.length][];
+		for (int i = 0; i < as1.length; i++) {
+			String tmp2 = as1[i];
+			tmp2 = tmp2.substring(1, tmp2.length() - 1);
+			String as2[] = tmp2.split(",");
+
+			for (int j = 0; j < as2.length; j++) {
+				Integer.parseInt(as2[j]);
+			}
+		}
+		return;
+	}
+}

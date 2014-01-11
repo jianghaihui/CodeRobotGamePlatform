@@ -1,0 +1,32 @@
+package com.crgp.game.client.message;
+
+public abstract class Message {
+	protected String sourceType;
+	protected String sourceId;
+	protected String targetType;
+	protected String targetId;
+	protected String type;
+
+	public String getSourceType() {
+		return sourceType;
+	}
+
+	public String getSourceId() {
+		return sourceId;
+	}
+
+	public String getTargetType() {
+		return targetType;
+	}
+
+	public String getTargetId() {
+		return targetId;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public abstract String getMessage() ;
+
+}

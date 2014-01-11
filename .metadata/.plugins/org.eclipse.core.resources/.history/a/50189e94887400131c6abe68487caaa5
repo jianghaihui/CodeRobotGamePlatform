@@ -1,0 +1,16 @@
+package com.crgp.client;
+
+import java.net.Socket;
+
+public class Client {
+	public static String IP = "127.0.0.1";
+	public static int PORT = 15000;
+
+	private static Socket client;
+
+	private static Socket getClient()  {
+		if (client == null) {
+			client = new Socket(IP, PORT);
+		}
+	}
+}

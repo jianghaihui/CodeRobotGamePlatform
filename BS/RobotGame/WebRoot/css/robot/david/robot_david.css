@@ -1,0 +1,21 @@
+.robot-david-button-run-icon {
+    background-image: url(../../../images/robot/david/r.png) !important;
+    background-repeat: no-repeat;
+}
+
+#robot-david-button-run .x-btn-text {
+    width: 80px;
+    height: 80px;
+}
+
+.robot-david-button-cfg-icon {
+    background-image: url(../../../images/robot/david/cfg.png) !important;
+}
+
+.icon-david-robot {
+    background-image: url(../../../images/robot/david/r-icon.png) !important;
+}
+
+.codefile-button-selected {
+    color: #FF0000;
+}

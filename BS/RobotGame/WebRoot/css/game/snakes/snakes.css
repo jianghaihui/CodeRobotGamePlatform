@@ -1,0 +1,25 @@
+@charset "utf-8";
+.snakes-win-table {
+    border-collapse: collapse;
+    border: solid #333 1px;
+    margin-left: 12px;
+    margin-top: 12px;
+}
+
+.snakes-win-td {
+    height: 10px;
+    width: 10px;
+    font-size: 0px;
+}
+
+.snakes-win-descreption-tbar {
+    background-image: url(../../../images/snakes/_help.gif) !important;
+}
+
+.snakes-win-restart-tbar {
+    background-image: url(../../../images/snakes/restart.png) !important;
+}
+
+.icon-snakes-win {
+    background-image: url(../../../images/snakes/win.png) !important;
+}

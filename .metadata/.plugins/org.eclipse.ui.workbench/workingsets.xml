@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workingSetManager>
+<workingSet editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1388762734530_1" label="CRGP-Platform-Developer" name="CRGP-Platform-Developer">
+<item elementID="=CRGP-Base-Robot-Java" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=CRGP-Base-Game" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=CRGP-Platform" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=CRGP-Server" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+</workingSet>
+<workingSet editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1388762752274_2" label="CRGP-Plugs-Developer" name="CRGP-Plugs-Developer">
+<item elementID="=CRGP-Eclipse-Plugs" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+</workingSet>
+<workingSet editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1388762782226_3" label="CRGP-Game-Developer" name="CRGP-Game-Developer">
+<item elementID="=CRGP-Mine-Robot" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=CRGP-Mine-Game" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+</workingSet>
+<workingSet editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1388762813911_6" label="CRGP-Player" name="CRGP-Player">
+<item elementID="=My-Mine-Robot-01" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+</workingSet>
+<workingSet aggregate="true" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1388058107218_0" label="Window Working Set" name="Aggregate for window 1388058107217"/>
+<workingSet aggregate="true" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1388762817970_7" label="Multiple Working Sets" name="Aggregate:CRGP-Game-Developer:CRGP-Platform-Developer:CRGP-Player:CRGP-Plugs-Developer:">
+<workingSet IMemento.internal.id="CRGP-Game-Developer"/>
+<workingSet IMemento.internal.id="CRGP-Platform-Developer"/>
+<workingSet IMemento.internal.id="CRGP-Player"/>
+<workingSet IMemento.internal.id="CRGP-Plugs-Developer"/>
+</workingSet>
+<workingSet aggregate="true" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1388762832296_8" label="Multiple Working Sets" name="Aggregate:CRGP-Game-Developer:CRGP-Platform-Developer:">
+<workingSet IMemento.internal.id="CRGP-Game-Developer"/>
+<workingSet IMemento.internal.id="CRGP-Platform-Developer"/>
+</workingSet>
+<mruList name="CRGP-Platform-Developer"/>
+<mruList name="CRGP-Game-Developer"/>
+<mruList name="CRGP-Player"/>
+<mruList name="CRGP-Plugs-Developer"/>
+</workingSetManager>

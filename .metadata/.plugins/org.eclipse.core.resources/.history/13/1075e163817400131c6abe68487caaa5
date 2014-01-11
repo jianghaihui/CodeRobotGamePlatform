@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--定义project文件的文件名与默认执行目标 -->
+<project default="dist" name="CodeRobotGamePlatform">
+	<!--添加描述 -->
+	<description>Code Robot Game Platform</description>
+	<!--添加属性,相当于文件级的全局变量,此处用于设置目录名称 -->
+	<property name="base-client-src-dir" location="base-client" />
+	<property name="base-game-src-dir" location="base-game" />
+	<property name="base-robot-java-src-dir" location="base-robot-java" />
+	<property name="platform-src-dir" location="platform" />
+	<property name="server-src-dir" location="server" />
+	<property name="binDir" location="bin" />
+	<property name="distDir" location="dist" />
+	<!--创建目标,操作为创建文件夹 -->
+	<target name="init">
+		<tstamp />
+		<mkdir dir="${binDir}" />
+		<mkdir dir="${distDir}" />
+	</target>
+	<!--创建目标compile,操作为编译src目录下的.java文件并输出.class文件到build目录 -->
+	<target name="compile" depends="init">
+		<javac srcdir="${base-client-src-dir}" destdir="${buildDir}/${base-client-src-dir}" />
+		<javac srcdir="${base-game-src-dir}" destdir="${buildDir}/${base-game-src-dir}" />
+		<javac srcdir="${base-robot-java-src-dir}" destdir="${buildDir}/${base-robot-java-src-dir}" />
+		<javac srcdir="${platform-src-dir}" destdir="${buildDir}/${platform-src-dir}" />
+		<javac srcdir="${server-src-dir}" destdir="${buildDir}/${server-src-dir}" />
+	</target>
+	<!--创建目标dist,操作为打包.class文件并输出到dist目录,打包.java文件并输出到dist目录 -->
+	<target name="dist" depends="compile">
+		<jar destfile="${distDir}/base-client.jar" basedir="${buildDir}/${base-client-src-dir}" />
+		<jar destfile="${distDir}/base-game.jar" basedir="${buildDir}/${base-game-src-dir}" />
+		<jar destfile="${distDir}/base-robot-java.jar" basedir="${buildDir}/${base-robot-java-src-dir}" />
+		<jar destfile="${distDir}/platform.jar" basedir="${buildDir}/${platform-src-dir}" />
+		<jar destfile="${distDir}/server.jar" basedir="${buildDir}/${server-src-dir}">
+			<!-- 创建清单- -->
+			<manifest>
+				<attribute name="Built-By" value="XJiang" />
+				<attribute name="Main-Class" value="package.Main" />
+			</manifest>
+		</jar>
+		<jar destfile="${distDir}/package-src-${DSTAMP}.jar" basedir="${srcDir}" />
+	</target>
+	<!--创建目标clean,操作为清空build与dist目录 -->
+	<target name="clean">
+		<_delete dir="${buildDir}" />
+		<_delete dir="${distDir}" />
+	</target>
+
+</project>

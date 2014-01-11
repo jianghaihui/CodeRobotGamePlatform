@@ -1,0 +1,31 @@
+.mainPanel {
+    position: absolute;
+    width: 410;
+    height: 410;
+    left: 120;
+    margin-top: 25;
+    text-align: 'center';
+    color: 'blue';
+    font-size: 28;
+}
+
+.westPanel {
+    position: absolute;
+    width: 110;
+    height: 410;
+    margin-top: 25;
+    text-align: 'left';
+    font-size: 15;
+}
+
+.sudoku-win-descreption-tbar {
+    background-image: url(../../../images/sudoku/_help.gif) !important;
+}
+
+.sudoku-win-restart-tbar {
+    background-image: url(../../../images/sudoku/restart.png) !important;
+}
+
+.icon-sudoku-win {
+    background-image: url(../../../images/sudoku/win.png) !important;
+}

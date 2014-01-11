@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gb2312"/>
+<title>俄罗斯方块 JavaScrtip版</title>
+<style>
+
+    body {
+        text-align: center
+    }
+</style>
+<!--[if IE]>
+<script type="text/javascript" src="excanvas.js"></script><![endif]-->
+<script language="JavaScript" type="text/javascript">
+/*
+ 俄罗斯方块
+
+ 作者:张晓龙
+
+ E-mail:challs82@gmail.com
+
+ qq:24675749
+
+ 完成时间:2008/1/18
+
+
+ 图片都是CanvasRenderingContext2D 及时渲染的,呵呵,因为 IE 并不支持 CanvasRenderingContext2D ,我用的是GOOGLE开发的CanvasRenderingContext2D模仿包,在IE下运行卡的要命,Firefox 速度就爽多拉!!!!希望什么时候IE也能支持啊(不是喜欢IE,而是用IE的人实在是多啊),程序上也没有仔细研究优化问题,可能仔细优化下,速度可能会好些!!!希望能对大家有用!!
+ */
+var kuanjx = new Array();
+var kuan = new Array([8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8], [8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8]);
+var wj = new Array();
+wj[0] = new Array([
+    [0, 0, 0, 0],
+    [2, 2, 2, 0],
+    [2, 0, 0, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 2, 2, 0],
+    [0, 0, 2, 0],
+    [0, 0, 2, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 0, 0, 0],
+    [0, 0, 0, 2],
+    [0, 2, 2, 2],
+    [0, 0, 0, 0]
+], [
+    [0, 2, 0, 0],
+    [0, 2, 0, 0],
+    [0, 2, 2, 0],
+    [0, 0, 0, 0]
+]);
+wj[1] = new Array([
+    [0, 3, 0, 0],
+    [3, 3, 3, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 3, 0, 0],
+    [0, 3, 3, 0],
+    [0, 3, 0, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 0, 0, 0],
+    [3, 3, 3, 0],
+    [0, 3, 0, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 3, 0, 0],
+    [3, 3, 0, 0],
+    [0, 3, 0, 0],
+    [0, 0, 0, 0]
+]);
+wj[2] = new Array([
+    [0, 0, 0, 0],
+    [0, 1, 1, 0],
+    [0, 1, 1, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 1, 1, 0],
+    [0, 1, 1, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 0, 0, 0],
+    [0, 1, 1, 0],
+    [0, 1, 1, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 0, 0, 0],
+    [0, 1, 1, 0],
+    [0, 1, 1, 0],
+    [0, 0, 0, 0]
+]);
+wj[3] = new Array([
+    [0, 0, 0, 0],
+    [0, 4, 4, 4],
+    [0, 0, 0, 4],
+    [0, 0, 0, 0]
+], [
+    [0, 0, 4, 0],
+    [0, 0, 4, 0],
+    [0, 4, 4, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 0, 0, 0],
+    [4, 0, 0, 0],
+    [4, 4, 4, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 4, 4, 0],
+    [0, 4, 0, 0],
+    [0, 4, 0, 0],
+    [0, 0, 0, 0]
+]);
+wj[4] = new Array([
+    [0, 5, 0, 0],
+    [0, 5, 5, 0],
+    [0, 0, 5, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 5, 5, 0],
+    [5, 5, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 5, 0, 0],
+    [0, 5, 5, 0],
+    [0, 0, 5, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 5, 5, 0],
+    [5, 5, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]
+]);
+wj[4] = new Array([
+    [0, 0, 6, 0],
+    [0, 6, 6, 0],
+    [0, 6, 0, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 6, 6, 0],
+    [0, 0, 6, 6],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 0, 6, 0],
+    [0, 6, 6, 0],
+    [0, 6, 0, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 6, 6, 0],
+    [0, 0, 6, 6],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]
+]);
+wj[5] = new Array([
+    [0, 0, 7, 0],
+    [0, 0, 7, 0],
+    [0, 0, 7, 0],
+    [0, 0, 7, 0]
+], [
+    [0, 0, 0, 0],
+    [7, 7, 7, 7],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]
+], [
+    [0, 0, 7, 0],
+    [0, 0, 7, 0],
+    [0, 0, 7, 0],
+    [0, 0, 7, 0]
+], [
+    [0, 0, 0, 0],
+    [7, 7, 7, 7],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]
+]);
+var color = new Array("#ffffff", "#0000ff", "#FF0000", "#FF00FF", "#00FF00", "#FFFF00", "#00FFFF", "#660066", "#000000")
+var ca;
+var x = 4;
+var y = 0;
+var dqzt = 1;
+var kkzt = 1;
+var nkkzt = 2;
+function xiayige() {
+    kkzt = nkkzt;
+    nkkzt = Math.floor(Math.random() * 6)
+    for (var i = 0; i < wj[kkzt][dqzt].length; i++) {
+        for (var u = 0; u < wj[kkzt][dqzt][i].length; u++) {
+            ca.fillStyle = color[0];
+            ca.fillRect((12 + u) * 20 + u + 12, (5 + i) * 20 + i + 5, 20, 20);
+            if (wj[nkkzt][dqzt][i][u] != 0) {
+                ca.fillStyle = color[wj[nkkzt][dqzt][i][u]];
+                ca.fillRect((12 + u) * 20 + u + 12, (5 + i) * 20 + i + 5, 20, 20);
+            }
+        }
+    }
+    anliu();
+    setTimeout('zhidong()', 1000);
+}
+function pzjc(a, c) {//(1 = ←) (2 = →) (3 = ↓)
+    var jc = 1;
+    var b = '';
+    if (a == 4) {
+        var e = c;
+    } else {
+        var e = dqzt;
+    }
+    for (var i = 0; i < wj[kkzt][e].length; i++) {
+        for (var u = 0; u < wj[kkzt][e][i].length; u++) {
+            if (wj[kkzt][e][i][u] != 0) {
+                if (a == 1) {
+                    if (kuan[y + i][x + u - 1] != 0) {
+                        jc = 0;
+                        break;
+                    }
+                } else if (a == 2) {
+                    if (kuan[y + i][x + u + 1] != 0) {
+                        jc = 0;
+                        break;
+                    }
+                } else if (a == 3) {
+                    if (kuan[y + i + 1][x + u] != 0) {
+                        jc = 0;
+                        break;
+                    }
+                } else if (a == 4) {
+                    if (kuan[y + i][x + u] != 0) {
+                        jc = 0;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    return jc;
+
+}
+function main2(a) {
+    var jc = 1;
+    for (var i = a - 1; i > 1; i--) {
+        jc = 1;
+        for (var u = 0; u < kuan[i].length; u++) {
+            if (kuan[i + 1][u] != 0 && kuan[i + 1][u] != 8) {
+                ca.fillStyle = color[0];
+                ca.fillRect(u * 20 + u, (i + 1) * 20 + (i + 1), 20, 20);
+                jc = 0;
+            }
+            if (kuan[i][u] != 0 && kuan[i][u] != 8) {
+                ca.fillStyle = color[kuan[i][u]];
+                ca.fillRect(u * 20 + u, (i + 1) * 20 + (i + 1), 20, 20);
+            }
+        }
+        if (jc == 1) break;
+    }
+}
+function main1() {
+    ca = document.getElementById('main').getContext('2d');
+    for (var i = 0; i < kuan.length; i++) {
+        for (var u = 0; u < kuan[i].length; u++) {
+            if (kuan[i][u] != 0) {
+                ca.fillStyle = color[kuan[i][u]];
+                ca.fillRect(u * 20 + u, i * 20 + i, 20, 20);
+            }
+        }
+    }
+    xiayige();
+    zhidong();
+}
+
+function anliu() {
+    for (var i = 0; i < wj[kkzt][dqzt].length; i++) {
+        for (var u = 0; u < wj[kkzt][dqzt][i].length; u++) {
+            if (wj[kkzt][dqzt][i][u] != 0) {
+                ca.fillStyle = color[wj[kkzt][dqzt][i][u]];
+                ca.fillRect((x + u) * 20 + u + x, (y + i) * 20 + i + y, 20, 20);
+            }
+        }
+    }
+}
+function qinchu() {
+    for (var i = 0; i < wj[kkzt][dqzt].length; i++) {
+        for (var u = 0; u < wj[kkzt][dqzt][i].length; u++) {
+            if (wj[kkzt][dqzt][i][u] != 0) {
+                ca.fillStyle = color[0];
+                ca.fillRect((x + u) * 20 + u + x, (y + i) * 20 + i + y, 20, 20);
+            }
+        }
+    }
+}
+document.onkeydown = kongzhi;
+
+function kongzhi(event) {
+    if (window.event) {
+        var u = window.event.keyCode;
+    } else {
+        var u = event.keyCode;
+    }
+    qinchu();
+    if (u == 37) {
+        if (pzjc(1) == 1) {
+            x--;
+        }
+    } else if (u == 39) {
+        if (pzjc(2) == 1) {
+            x++;
+        }
+    } else if (u == 40) {
+        if (pzjc(3) == 1) {
+            y++;
+        }
+    } else if (u == 32) {
+        var c = dqzt;
+        c++;
+        if (c > 3)c = 0;
+        if (pzjc(4, c) == 1) {
+            dqzt++;
+            if (dqzt > 3)dqzt = 0;
+        }
+    }
+    anliu();
+
+}
+function zhidong() {
+
+    if (pzjc(3) == 1) {
+        qinchu();
+        y++;
+        anliu();
+        setTimeout('zhidong()', 1000);
+    } else {
+        for (var i = 0; i < wj[kkzt][dqzt].length; i++) {
+            for (var u = 0; u < wj[kkzt][dqzt][i].length; u++) {
+                if (wj[kkzt][dqzt][i][u] != 0) {
+                    kuan[y + i][x + u] = wj[kkzt][dqzt][i][u];
+                }
+            }
+        }
+        chexiao();
+        x = 4;
+        y = 0;
+        xiayige();
+    }
+
+}
+function chexiao() {
+    var jc = 1;
+    for (var i = 0; i < kuan.length; i++) {
+        jc = 1;
+        for (var u = 1; u < kuan[i].length - 1; u++) {
+            if (kuan[i][u] == 0 || kuan[i][u] == 8) {
+                jc = 0;
+            }
+        }
+        if (jc == 1) {
+            main2(i);
+            kuan.splice(i, 1);
+            kuan.unshift([8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8]);
+        }
+    }
+
+}
+
+</script>
+</head>
+<body onLoad="main1()">
+<canvas id="main" width=350 height=500></canvas>
+</body>
+</html>

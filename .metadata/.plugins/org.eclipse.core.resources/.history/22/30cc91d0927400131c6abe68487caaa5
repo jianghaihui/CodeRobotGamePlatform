@@ -1,0 +1,4 @@
+package com.crgp.game.client;
+
+public abstract class Action {
+}

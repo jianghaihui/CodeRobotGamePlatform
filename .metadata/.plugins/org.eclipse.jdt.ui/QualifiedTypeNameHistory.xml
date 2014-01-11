@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="org.dom4j.Document"/>
+<fullyQualifiedTypeName name="org.dom4j.Element"/>
+<fullyQualifiedTypeName name="com.crgp.platform.xml.XMLReader"/>
+<fullyQualifiedTypeName name="com.xjiang.mine.robot.RobotService"/>
+<fullyQualifiedTypeName name="com.xjiang.mine.game.GameService"/>
+<fullyQualifiedTypeName name="java.net.Socket"/>
+<fullyQualifiedTypeName name="com.crgp.client.Client"/>
+<fullyQualifiedTypeName name="java.lang.Exception"/>
+<fullyQualifiedTypeName name="com.crgp.game.BaseGame"/>
+<fullyQualifiedTypeName name="com.crgp.game.client.Action"/>
+<fullyQualifiedTypeName name="java.util.Map"/>
+<fullyQualifiedTypeName name="java.util.HashMap"/>
+<fullyQualifiedTypeName name="java.io.OutputStream"/>
+<fullyQualifiedTypeName name="java.io.InputStream"/>
+<fullyQualifiedTypeName name="java.lang.Runnable"/>
+</qualifiedTypeNameHistroy>

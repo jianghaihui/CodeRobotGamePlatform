@@ -1,0 +1,12 @@
+package com.crgp.game.client.message;
+
+public class DataMessage extends Message {
+
+	public static final String TYPE = "DATA";
+
+	@Override
+	public String getType() {
+		return TYPE;
+	}
+
+}

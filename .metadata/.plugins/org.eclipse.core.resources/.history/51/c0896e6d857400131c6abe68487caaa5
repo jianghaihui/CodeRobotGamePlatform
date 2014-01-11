@@ -1,0 +1,3 @@
+<RobotList>
+	<Robot name="jhs_fivechess_robot_01" class="com.jhs.fivechess.robot.FiveChessRobot01" />
+</RobotList>

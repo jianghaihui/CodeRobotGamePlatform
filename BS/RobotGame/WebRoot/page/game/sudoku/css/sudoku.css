@@ -1,0 +1,96 @@
+#body {
+    position: relative;
+}
+
+/* http://www.codefans.net */
+.mainPanel {
+    position: absolute;
+    width: 405;
+    height: 455;
+    top: 50%;
+    margin-top: -200;
+    left: 50%;
+    margin-left: -200;
+    text-align: 'center';
+    color: 'blue';
+    font-size: 28;
+    border-width: 2px;
+    border-style: solid;
+    border-color: blue;
+    /*background-color: '#0e0';*/
+}
+
+.mask {
+    position: absolute;
+    width: 405;
+    height: 455;
+    top: 50%;
+    margin-top: -200;
+    left: 50%;
+    margin-left: -200;
+    background: url(../images/sudoku.jpg) no-repeat;
+}
+
+.btnPanel {
+    position: absolute;
+    width: 405;
+    height: 50;
+    left: 0;
+    top: 405;
+}
+
+.westPanel {
+    position: absolute;
+    width: 150;
+    height: 455;
+    top: 50%;
+    margin-top: -200;
+    left: 20%;
+    margin-left: 0;
+    text-align: 'left';
+    color: 'blue';
+    font-size: 28;
+    border-width: 2px;
+    border-style: solid;
+    border-color: blue;
+}
+
+.eastPanel {
+    position: absolute;
+    width: 700;
+    height: 100;
+    top: 5%;
+    margin-top: 0;
+    left: 20%;
+    margin-left: 0;
+    text-align: 'left';
+    color: 'black';
+    font-size: 28;
+    border-width: 2px;
+    border-style: solid;
+    border-color: blue;
+}
+
+.numberPicker {
+    position: relative;
+    width: 124;
+    height: 142;
+    border-width: 2px;
+    border-style: solid;
+    border-color: blue;
+    background-color: #0e0;
+}
+
+.finish {
+    position: absolute;
+    top: 20%;
+    margin-top: 0;
+    left: 40%;
+}
+
+.reset {
+    position: absolute;
+    top: 20%;
+    margin-top: 0;
+    left: 50%;
+}

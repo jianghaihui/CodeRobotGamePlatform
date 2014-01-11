@@ -1,0 +1,117 @@
+package com.crgp.game.client;
+
+import java.io.InputStream;
+import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.crgp.game.client.message.ActionMessage;
+import com.crgp.game.client.message.DataMessage;
+import com.crgp.game.client.message.Message;
+
+public class Client {
+	public static final String SEND = "SEND";
+	public static final String RECEIVE = "RECEIVE";
+
+	public static final String IP = "127.0.0.1";
+	public static final int PORT = 15000;
+
+	private Socket sendClient;
+	private Socket callbackClient;
+
+	private Map<String, Action> actionMap = new HashMap<String, Action>();
+
+	public Client(String uid) {
+
+	}
+
+	private Socket getSendClient() throws Exception {
+		if (sendClient == null) {
+			try {
+				sendClient = new Socket(IP, PORT);
+				sendClient.setKeepAlive(true);
+
+				// 握手
+				sendClient.getOutputStream().write(SEND.getBytes());
+			} catch (Exception e) {
+				throw new Exception("通讯服务客户端错误！");
+			}
+		}
+		return sendClient;
+	}
+
+	private Socket getCallBackClient() throws Exception {
+		if (callbackClient == null) {
+			try {
+				callbackClient = new Socket(IP, PORT);
+				callbackClient.setKeepAlive(true);
+
+				// 握手
+				callbackClient.getOutputStream().write(RECEIVE.getBytes());
+
+				new Thread(new CallBackLoopper()).start();
+			} catch (Exception e) {
+				throw new Exception("通讯服务客户端错误！");
+			}
+		}
+		return callbackClient;
+	}
+
+	public void registAction(String name, Action action) {
+		actionMap.put(name, action);
+	}
+
+	public DataMessage send(Message message) {
+		try {
+			getSendClient().getOutputStream().write(
+					message.getMessage().getBytes());
+			getSendClient().getOutputStream().flush();
+			if (message.hasReceipt()) {
+				InputStream is = getSendClient().getInputStream();
+
+				byte[] b = new byte[1024];
+				is.read(b);
+				return new DataMessage(new String(b));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	class CallBackLoopper implements Runnable {
+		@Override
+		public void run() {
+			try {
+				InputStream is = getCallBackClient().getInputStream();
+				while (true) {
+
+					byte[] b = new byte[1024];
+					is.read(b);
+
+					ActionMessage actionMessage = new ActionMessage(new String(
+							b));
+					Action action = actionMap
+							.get(actionMessage.getActionName());
+					Map<String, String> result = action.execute(actionMessage
+							.getParams());
+					if (actionMessage.hasReceipt()) {
+						DataMessage dataMessage = new DataMessage(
+								actionMessage.getTargetType(),
+								actionMessage.getTargetId(),
+								actionMessage.getSourceType(),
+								actionMessage.getSourceId());
+						dataMessage.setDatas(result);
+						getCallBackClient().getOutputStream().write(
+								dataMessage.getMessage().getBytes());
+						getCallBackClient().getOutputStream().flush();
+					}
+
+					Thread.sleep(10);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}

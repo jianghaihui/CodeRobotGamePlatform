@@ -1,0 +1,23 @@
+package com.crgp.robot;
+
+import java.util.Map;
+
+import com.crgp.game.client.Action;
+import com.crgp.game.client.message.ActionMessage;
+import com.xjiang.mine.robot.MineRobot;
+
+public class PlayAction extends Action {
+
+	private MineRobot robot;
+
+	public PlayAction(MineRobot robot) {
+		this.robot = robot;
+	}
+
+	@Override
+	public Map<String, String> execute(ActionMessage message) throws Exception {
+		robot.play(Integer.parseInt(message.getParam("code")));
+		return null;
+	}
+
+}

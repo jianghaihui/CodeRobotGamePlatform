@@ -1,0 +1,9 @@
+package com.crgp.game.client.message;
+
+public abstract class ActionMessage extends Message {
+
+	@Override
+	public String getType() {
+		return "ACTION";
+	}
+}

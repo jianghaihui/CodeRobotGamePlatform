@@ -1,0 +1,7 @@
+INDEX VERSION 1.122+D:\code\my-source\Java\workspace_CodeRobotGamePlatform\BS\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+362584243.index
+1581855413.index
+382750197.index
+2735643602.index
+174839136.index
+4274285507.index

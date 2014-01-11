@@ -1,0 +1,33 @@
+package com.crgp.robot;
+
+import com.crgp.game.client.Client;
+
+public abstract class BaseRobot {
+	private Client client;
+
+	public BaseRobot() {
+		client = new Client(UID)
+	}
+
+	// -------------------------
+	// ---
+	// ---信号与槽(Signal and Slots)
+	// ---
+	// -------------------------
+	/**
+	 * [SLOT] 机器人名字
+	 * 
+	 * @return 机器人名字
+	 */
+	public abstract String UID();
+
+	/**
+	 * [SLOT] 执行机器人代码
+	 * 
+	 * @param code
+	 *            回调标识
+	 * 
+	 */
+	public abstract void play(int code);
+
+}

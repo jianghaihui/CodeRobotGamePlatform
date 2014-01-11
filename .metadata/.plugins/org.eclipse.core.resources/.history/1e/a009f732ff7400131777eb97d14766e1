@@ -1,0 +1,45 @@
+package com.crgp.game.client.message;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
+public class ActionMessage extends Message {
+	public static final String TYPE = "ACTION";
+
+	private String actionName;
+	private Map<String, String> params = new HashMap<String, String>();
+
+	public ActionMessage(String sourceType, String sourceId, String targetType,
+			String targetId) {
+		this.sourceType = sourceType;
+		this.sourceId = sourceId;
+		this.targetType = targetType;
+		this.targetId = targetId;
+	}
+
+	public void setActionName(String actionName) {
+		this.actionName = actionName;
+	}
+
+	public void addParam(String key, String value) {
+		params.put(key, value);
+	}
+
+	@Override
+	public String getType() {
+		return TYPE;
+	}
+
+	@Override
+	public String getMessage() {
+		String action = actionName;
+		Set<String> keySet = params.keySet();
+		if (keySet.size() > 0) {
+			action = action + "?";
+		}
+
+		return sourceType + ":" + sourceId + ";" + targetType + ":" + targetId
+				+ ";" + getType() + ":" + action;
+	}
+}

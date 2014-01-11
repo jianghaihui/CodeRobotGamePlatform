@@ -1,0 +1,33 @@
+package com.crgp.game.client.message;
+
+public class DataMessage extends Message {
+
+	public static final String TYPE = "DATA";
+
+	public ActionMessage(String sourceType, String sourceId, String targetType,
+			String targetId) {
+		this.sourceType = sourceType;
+		this.sourceId = sourceId;
+		this.targetType = targetType;
+		this.targetId = targetId;
+	}
+
+	public ActionMessage(String sourceType, String sourceId, String targetType,
+			String targetId, String message) {
+		this.sourceType = sourceType;
+		this.sourceId = sourceId;
+		this.targetType = targetType;
+		this.targetId = targetId;
+		this.message = message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	@Override
+	public String getType() {
+		return TYPE;
+	}
+
+}

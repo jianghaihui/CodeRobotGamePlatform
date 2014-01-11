@@ -1,0 +1,39 @@
+package com.crgp.game.client.message;
+
+public class ActionMessage extends Message {
+	public static final String TYPE = "ACTION";
+
+	private String action;
+
+	public ActionMessage(String sourceType, String sourceId, String targetType,
+			String targetId) {
+		this.sourceType = sourceType;
+		this.sourceId = sourceId;
+		this.targetType = targetType;
+		this.targetId = targetId;
+	}
+
+	public ActionMessage(String sourceType, String sourceId, String targetType,
+			String targetId, String action) {
+		this.sourceType = sourceType;
+		this.sourceId = sourceId;
+		this.targetType = targetType;
+		this.targetId = targetId;
+		this.action = action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
+
+	@Override
+	public String getType() {
+		return TYPE;
+	}
+
+	@Override
+	public String getMessage() {
+		return sourceType + ":" + sourceId + ";" + targetType + ":" + targetId
+				+ ";" + getType() + ":" + action;
+	}
+}

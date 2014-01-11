@@ -1,0 +1,56 @@
+package com.crgp.game.client.message;
+
+public abstract class Message {
+	protected String sourceType;
+	protected String sourceId;
+	protected String targetType;
+	protected String targetId;
+	protected String type;
+	protected String message;
+
+	public ActionMessage(String sourceType, String sourceId, String targetType,
+			String targetId) {
+		this.sourceType = sourceType;
+		this.sourceId = sourceId;
+		this.targetType = targetType;
+		this.targetId = targetId;
+	}
+
+	public ActionMessage(String sourceType, String sourceId, String targetType,
+			String targetId, String message) {
+		this.sourceType = sourceType;
+		this.sourceId = sourceId;
+		this.targetType = targetType;
+		this.targetId = targetId;
+		this.message = message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public String getSourceType() {
+		return sourceType;
+	}
+
+	public String getSourceId() {
+		return sourceId;
+	}
+
+	public String getTargetType() {
+		return targetType;
+	}
+
+	public String getTargetId() {
+		return targetId;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+}

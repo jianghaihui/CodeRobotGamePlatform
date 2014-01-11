@@ -1,0 +1,910 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=gb2312">
+    <title>tetris</title>
+    <!--[if IE 6]>
+    <script type="text/javascript">try {
+        document.execCommand('BackgroundImageCache', false, true)
+    } catch (e) {
+    }</script>
+    <![endif]-->
+    <style type="text/css">
+        div.dvBlocks div {
+            width: 28px;
+            height: 28px;
+            position: absolute;
+            background-image: url(tetris_images/tetris.gif);
+            background-repeat: no-repeat;
+        }
+
+        div.title {
+            height: 65px;
+            width: 196px;
+            position: absolute;
+            left: 310px;
+            top: 505px;
+            background: url(tetris_images/tetris.gif) no-repeat 0px 37px;
+            text-align: left;
+        }
+
+        body {
+            text-align: center;
+            background-color: #DFEAFF;
+            font-size: 12px;
+        }
+
+        #dvStage {
+            width: 520px;
+            height: 582px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+        }
+
+        #dvStage {
+            border: 1px dashed #3399CC;
+        }
+
+        #dvRightBar {
+            position: absolute;
+            left: 310px;
+            top: 6px;
+        }
+
+        div.dvOut {
+            width: 288px;
+            height: 568px;
+            position: absolute;
+            left: 6;
+            top: 6px;
+            overflow: hidden;
+            background-color: #6699FF;
+        }
+
+        div.dvIn {
+            width: 280px;
+            height: 560px;
+            position: absolute;
+            left: 4px;
+            top: 4px;
+            overflow: hidden;
+            background-color: #B9CFFF;
+        }
+
+        #dvBlocks, #dvGrid, #dvBgColor, #dvBgImg, #dvBgImgMask, #dvGameOver, #dvGameOverBg {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            overflow: hidden;
+        }
+
+        #dvGameOver {
+            z-index: 12;
+            left: 40px;
+            top: 170px;
+            width: 200px;
+            height: 130px;
+            background-image: url(tetris_images/tetris_gameover.png);
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+
+        #dvGameOverBg {
+            z-index: 11;
+            background-color: #FFFFFF;
+        }
+
+        #dvBlocks {
+            z-index: 10;
+        }
+
+        #dvGrid {
+            z-index: 5;
+            background-image: url(tetris_images/tetris_grid.gif);
+        }
+
+        #dvBgImgMask {
+            z-index: 4;
+        }
+
+        #dvBgImg {
+            z-index: 3;
+        }
+
+        #dvBgColor {
+            z-index: 2;
+            background-color: #B9CFFF;
+        }
+
+        #dvBgImg img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .opacity50 {
+            opacity: 0.5;
+            -moz-opacity: 0.5;
+            filter: alpha(opacity = 50);
+        }
+
+        #dvGameOverBg.opacity50_opera, #dvBgImgMask {
+            background-color: transparent;
+            background-image: url(tetris_images/tetris_opacity50.png);
+        }
+
+        #dvNextOutF {
+            width: 130px;
+            height: 130px;
+            position: relative;
+            left: 0;
+            top: 0;
+            background-color: #6699FF;
+            text-align: left;
+        }
+
+        #dvNextOut {
+            width: 122px;
+            height: 122px;
+            position: relative;
+            margin: 4px;
+            background-color: #B9CFFF;
+            text-align: left;
+        }
+
+        #dvNextBlocks {
+            position: relative;
+        }
+
+        .dvScoreF {
+            margin: 20px 0;
+        }
+
+        .dvScoreF .lable {
+            font-family: Arial;
+            font-size: 14pt;
+            font-weight: bold;
+            color: #6699FF;
+        }
+
+        #dvScore, #dvLevel {
+            font-family: Arial;
+            font-size: 14pt;
+            font-weight: bold;
+            color: #6699FF;
+        }
+
+        #btnViewNext {
+        }
+
+        #btnNewGame {
+        }
+
+        #btnPause {
+        }
+
+        .tabs {
+            height: 25px;
+            background-image: url(tetris_images/tab.gif);
+            background-position: 0 -49px;
+        }
+
+        .tabs div.focus, .tabs div.blur {
+            cursor: default;
+            margin-right: 2px;
+            width: 39px;
+            background-image: url(tetris_images/tab.gif);
+            font-size: 12px;
+            overflow: hidden;
+            float: left;
+        }
+
+        .tabs div.blur {
+            margin-top: 1px;
+            height: 24px;
+            color: #808080;
+            background-position: 0 -25px;
+        }
+
+        .tabs div.focus {
+            margin-top: 0;
+            height: 25px;
+            color: #000000;
+            background-position: 0 0;
+        }
+
+        .tabs div div {
+            text-align: center;
+            margin-top: 6px;
+        }
+
+        #dvTabKey_C input.tx {
+            border: solid 1px #6699CC;
+            text-align: center;
+            width: 60px;
+            margin: 1px 0 1px 0;
+        }
+
+        #dvTabScore_C td {
+            font-size: 12px;
+            text-align: center;
+            background-color: #DFEAFF;
+        }
+
+        #dvTabScore_C table {
+            background-color: #6699CC;
+        }
+
+        input.btn2 {
+            width: 49px;
+            height: 19px;
+            border: none;
+            background: url(tetris_images/btn_bg.gif) no-repeat;
+        }
+
+        body {
+            overflow: auto;
+        }
+    </style>
+    <style type="text/css"></style>
+    <!--[if lt IE 7]>
+    <style type="text/css">
+        #dvGameOver {
+            _background: none; /*IE6*/
+            _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(enabled = 'true', sizingMethod = 'scale', src = 'tetris_images/tetris_gameover.png'); /*IE6*/
+        }
+    </style>
+    <![endif]-->
+    <!--[if lt IE 7]>
+    <script type="text/javascript">var ltIE7 = true;</script>
+    <![endif]-->
+    <!--[if IE]>
+    <script type="text/javascript">var isIE = true;</script>
+    <![endif]-->
+    <!--[if lt IE 5]>
+    <script type="text/javascript">alert('您的IE浏览器版本太低，可能无法运行本游戏。');</script>
+    <![endif]-->
+    <script type="text/javascript">
+        var oSheet = document.styleSheets[1];
+        var blockSkins = ["方块1", "方块2", "方块3"];
+        function addCss() {
+            var rules = oSheet.rules || oSheet.cssRules;
+            var j = rules.length;
+            var ar = oSheet.addRule ? (function (a, b) {
+                oSheet.addRule(a, b)
+            }) : (function (a, b) {
+                oSheet.insertRule(a + "{" + b + "}", j++)
+            });
+            for (var i = 0; i < 7; i++)
+                ar(".c" + i, "background-position: -" + (i * 28) + "px 0;");
+            for (var i = 0; i < 10; i++)
+                ar(".x" + i, "left: " + (i * 28) + "px;");
+            for (var i = -4; i < 20; i++)
+                ar(".y" + i, "top: " + (i * 28) + "px;");
+        }
+        function setBlockSkin(x) {
+            var rules = oSheet.rules || oSheet.cssRules;
+            for (var i = 0; i < 7; i++)
+                rules[i].style.backgroundPosition = (-28 * i) + "px " + (-28 * x) + "px";
+        }
+        addCss();
+    </script>
+</head>
+
+<body>
+<div id="dvStage">
+
+    <div class="dvOut">
+        <div class="dvIn">
+            <div id="dvGameOver" style="display:none"></div>
+            <div id="dvGameOverBg" class="opacity50" style="display:none"></div>
+            <div id="dvBlocks" class="dvBlocks"></div>
+            <div id="dvGrid"></div>
+            <div id="dvBgColor"></div>
+        </div>
+    </div>
+
+    <div id="dvRightBar" style="text-align:left;">
+
+        <div id="dvNextOutF" style="border-top:1px solid #DFEAFF;">
+            <div id="dvNextOut">
+                <div id="dvNextBlocks" class="dvBlocks"></div>
+            </div>
+        </div>
+
+        <div class="dvScoreF">速度：<span id="dvLevel">&nbsp;</span>&nbsp; 得分：<span id="dvScore">&nbsp;</span></div>
+
+        <!--<input type="button" id="btnSwitch" value="开始" class="btn2">-->
+        <br><br>
+
+        <div class="tabs" id="dvTabs" style="width:196px; margin-right:10px;">
+            <div class="blur" id="dvTabUI" style="margin-left:6px;">
+                <div>显示</div>
+            </div>
+            <div class="focus" id="dvTabAbout">
+                <div>关于</div>
+            </div>
+        </div>
+        <div style="clear:left;font-size:12px; width:196px; height:235px; margin-right:10px; overflow:hidden;border:solid 1px #ADCAD3; border-top:none;">
+            <div style="margin: 5px;">
+                <div id="dvTabUI_C" style="display:none;">
+                    <input type="checkbox" id="ckGrid" checked><label for="ckGrid">显示网格</label>
+                    <br><br>
+                    方块样式：<select id="seBlockSkin"></select>
+                    <br><br>
+                    初始速度：<select id="seLevel"></select>
+                </div>
+                <div id="dvTabAbout_C">
+                    <b>Javascript漂亮俄罗斯方块</b><br><br>
+                    作者：<a href="http://blog.csdn.net/cuixiping/">cuixiping</a><br>
+                    时间：2009年7月<br>
+                    <br>经作者测试，本游戏在IE 8/7/6、Firefox 3.0、Opera 9.6中能正常运行，其他浏览器未做测试。
+                    编程疏漏在所难免，欢迎发现BUG的朋友进行<a
+                        href="http://topic.csdn.net/u/20090722/02/69c1ffb6-670f-4ad3-a8f6-baf494979914.html">修正和反馈给我</a>。
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="title">Javascript漂亮俄罗斯方块<br>作者：<a href="http://blog.csdn.net/cuixiping/">cuixiping</a></div>
+
+</div>
+<noscript><span style="color:red;font-weight:bold;">本游戏需要开启JavaScript支持！</span></noscript>
+<script language="Javascript">
+function $(id) {
+    return document.getElementById(id);
+}
+function $each(arr, func) {
+    for (var n = arr.length, i = 0; i < n; i++)func(arr[i], i);
+}
+function viewObj(obj) {
+    var v, s = [];
+    for (v in obj) s.push(v);
+    alert(s.join(' '));
+}
+function display(obj, b) {
+    obj.style.display = b ? '' : 'none';
+}
+
+//按键设置
+var cfg = {
+    "ui":{
+        "skin":0, "grid":true, "shadow":false, "next":true
+    }, "direction":1 //旋转方向: 1顺时针 -1逆时针, "startLevel":7, "topScores":[]
+}
+
+
+//升级行数，每消多少行升到下一级速度(两种升级策略，按行数和按分数，这里取按行数)(2009-7-31改为按分数)
+var uplevelScroe = 10000;
+var gLevelScroe = 0; //本级已消分数，升级或换级时清零
+
+//级别时间，每多少毫秒下落一格
+var levels = [500, 450, 400, 350, 300, 250, 200, 150, 100, 70];
+var addScores = [0, 100, 300, 600, 1000]; //消行加分
+var gScore = 0; //总分
+var gLines = 0; //总行数
+var currLevel = cfg.startLevel;
+var T = 6, curr = 0, currColor = 0, currX = 0, currY = 0;
+var currMill = levels[currLevel]; //速度级别，间隔毫秒数
+var timer_movie, timer_ani, timer_keydown = 0, timer_keydown1 = 0; //定时器
+var timer_down, timer_left, timer_right, timer_rotate;
+//只有“左、右、上(旋转)”三种键是需要重复触发的，要判断何时按下何时释放
+//当两个同等作用的键都按下，只产生一个的效果，其中一个释放后，另一个要继续有效
+//当有左右都在按下状态，则左右抵销。旋转作用不抵销。
+var keyHasDown = {}; //记录键的是否按下状态，如keyHasDown[32]==true表示空格键已按下未释放
+var cfgNextBlock = {"T":0, "curr":0, "color":0};
+var st_ready = 0, st_playing = 1, st_paused = 2, st_over = 3;
+var gStatus = st_ready; //状态：ready, playing, paused, over
+var currBlocks = []; //当前控制方块的数组
+var lastCannotDown = nowCannotDown = nowCannotLeft = nowCannotRight = false;
+var movieY = 19, movieX = 0, aniTime = 0;
+var isOpera = navigator.userAgent.indexOf("Opera/") == 0;
+if (typeof ltIE7 == "undefined")var ltIE7 = false;
+if (typeof isIE == "undefined")var isIE = false;
+
+
+if (typeof dvStage == "undefined") {
+    function id2var(tag) {
+        var os = document.getElementsByTagName(tag);
+        for (var i = 0; i < os.length; i++) {
+            if (os[i].id)window[os[i].id] = os[i]
+        }
+    }
+
+    id2var("div");
+    id2var("span");
+    id2var("select");
+    id2var("input");
+}
+
+
+//var Ts=["S","Z","L","J","I","O","T"]; //形状类型
+var layout = {
+    "length":7, 0:{ //S
+        "xy":[
+            [
+                [0, 1, 1, 2],
+                [0, 0, -1, -1]
+            ]
+            ,
+            [
+                [0, 0, 1, 1],
+                [-2, -1, -1, 0]
+            ]
+        ]
+    }, 1:{ //Z
+        "xy":[
+            [
+                [0, 1, 1, 2],
+                [-1, -1, 0, 0]
+            ]
+            ,
+            [
+                [0, 0, 1, 1],
+                [0, -1, -1, -2]
+            ]
+        ]
+    }, 2:{ //L
+        "xy":[
+            [
+                [0, 0, 1, 2],
+                [0, -1, -1, -1]
+            ]
+            ,
+            [
+                [0, 1, 1, 1],
+                [-2, -2, -1, 0]
+            ]
+            ,
+            [
+                [0, 1, 2, 2],
+                [0, 0, 0, -1]
+            ]
+            ,
+            [
+                [0, 0, 0, 1],
+                [-2, -1, 0, 0]
+            ]
+        ]
+    }, 3:{ //J
+        "xy":[
+            [
+                [0, 1, 2, 2],
+                [-1, -1, -1, 0]
+            ]
+            ,
+            [
+                [0, 1, 1, 1],
+                [0, 0, -1, -2]
+            ]
+            ,
+            [
+                [0, 0, 1, 2],
+                [-1, 0, 0, 0]
+            ]
+            ,
+            [
+                [0, 0, 0, 1],
+                [0, -1, -2, -2]
+            ]
+        ]
+    }, 4:{ //I
+        "xy":[
+            [
+                [1, 1, 1, 1],
+                [-3, -2, -1, 0]
+            ]
+            ,
+            [
+                [0, 1, 2, 3],
+                [0, 0, 0, 0]
+            ]
+        ]
+    }, 5:{ //O
+        "xy":[
+            [
+                [0, 0, 1, 1],
+                [0, -1, 0, -1]
+            ]
+        ]
+    }, 6:{ //T
+        "xy":[
+            [
+                [0, 1, 2, 1],
+                [-1, -1, -1, 0]
+            ]
+            ,
+            [
+                [1, 1, 1, 0],
+                [-2, -1, 0, -1]
+            ]
+            ,
+            [
+                [0, 1, 2, 1],
+                [0, 0, 0, -1]
+            ]
+            ,
+            [
+                [0, 0, 0, 1],
+                [0, -1, -2, -1]
+            ]
+        ]
+    }
+}
+
+//初始化方阵
+var XY = [];
+XY.reset = function () {
+    for (var i = 0; i < 10; i++) {
+        XY[i] = [];
+        for (var j = 0; j < 20; j++) XY[i][j] = false;
+    }
+}
+XY.toString = function () {
+    var s = [];
+    for (var i = 0; i < 20; i++) {
+        s.push('\n');
+        for (var j = 0; j < 10; j++) {
+            s.push(XY[j][i] ? '\u25A0' : '\u25A1');
+        }
+    }
+    return s.join("");
+}
+XY.reset();
+
+//初始化预览框
+dvNextBlocks.innerHTML = "<div></div><div></div><div></div><div></div>";
+//初始化速度级别框
+for (var i = 0; i < levels.length; i++)seLevel.options.add(new Option(i + 1, i));
+//初始化方块风格框
+for (var i = 0; i < blockSkins.length; i++)seBlockSkin.options.add(new Option(blockSkins[i], i));
+
+function min(arr) {
+    for (var i = 1, m = arr[0]; i < arr.length; i++) {
+        if (arr[i] < m)m = arr[i];
+    }
+    return m;
+}
+function max(arr) {
+    for (var i = 1, m = arr[0]; i < arr.length; i++) {
+        if (arr[i] > m)m = arr[i];
+    }
+    return m;
+}
+//每组坐标中的最小最大xy
+for (var i = 0; i < layout.length; i++) {
+    var xy = layout[i].xy;
+    for (var j = 0; j < xy.length; j++) {
+        var d = xy[j];
+        d[2] = [min(d[0]), max(d[0]), min(d[1]), max(d[1])];
+    }
+}
+
+function viewNext() {
+    var T = Math.floor(layout.length * Math.random());
+    var color = Math.floor(7 * Math.random());
+    var curr = Math.floor(layout[T].xy.length * Math.random());
+    var d = layout[T].xy[curr];
+    var xmin = d[2][0], ymin = d[2][2];
+    var w = d[2][1] - d[2][0] + 1, h = d[2][3] - d[2][2] + 1;
+    var style = dvNextBlocks.style;
+    style.left = (122 / 2 - w * 28 / 2) + "px";
+    style.top = (122 / 2 - h * 28 / 2) + "px";
+    for (var i = 0; i < 4; i++) {
+        dvNextBlocks.childNodes[i].className = "c" + color + " x" + (d[0][i] - xmin) + " y" + (d[1][i] - ymin);
+    }
+    cfgNextBlock.T = T, cfgNextBlock.curr = curr, cfgNextBlock.color = color;
+}
+function draw4(T, x, y, b) {
+    //if(b && $("T0"))return;
+    var xy = layout[T].xy;
+    var d = xy[0];
+    var color = currColor;
+    currBlocks = [];
+    for (var i = 0; i < 4; i++) {
+        var div = draw1(color, x + d[0][i], y + d[1][i]);
+        if (!b)div.id = "T" + i;
+        if (!b)currBlocks.push(div);
+    }
+    currX = x;
+    currY = y;
+}
+function draw1(c, x, y, b) {
+    var div = document.createElement("div");
+    div.className = "c" + c + " x" + x + " y" + y;
+    if (b && x >= 0 && x < 10 && y >= 0 && y < 20) {
+        XY[x][y] = true;
+        div.id = 'end_' + x + '_' + y;
+    }
+    return dvBlocks.appendChild(div);
+}
+function dropNewBlock() {
+    T = cfgNextBlock.T;
+    curr = cfgNextBlock.curr;
+    currColor = cfgNextBlock.color;
+    var xy2 = layout[T].xy[cfgNextBlock.curr][2];
+    var x = Math.floor((10 - (xy2[1] - xy2[0] + 1) - xy2[0]) / 2);
+    draw4(T, x, -1);
+    down_T();
+    viewNext();
+}
+
+function move(T, x, y) {
+    x = currX + x;
+    y = currY + y;
+    var xy = layout[T].xy;
+    var d = xy[curr];
+    var color = "c" + currColor;
+    var cx = [], cy = [];
+    for (var i = 0; i < 4; i++) {
+        cx[i] = (x + d[0][i]), cy[i] = (y + d[1][i]);
+        if (cx[i] < 0 || cx[i] > 9 || cy[i] < -4 || cy[i] > 19)return;
+    }
+    for (var i = 0; i < 4; i++) {
+        currBlocks[i].className = color + " x" + cx[i] + " y" + cy[i];
+    }
+    currX = x;
+    currY = y;
+}
+
+function end(T) {
+    currBlocks.end = true;
+    clearTimeout(timer_down);
+    var lines = []; //消除行号y
+    for (var i = 0; i < 4; i++) {
+        var xy = layout[T].xy[curr];
+        var x = currX + xy[0][i];
+        var y = currY + xy[1][i];
+        //如果y<0则game over
+        if (y < 0) {
+            gStatus = st_over;
+            display(dvGameOver, true);
+            display(dvGameOverBg, !isOpera);
+            animate(dvGameOver);
+            //movie(); //结尾动画
+            if (gScore)saveScore();
+            return;
+        }
+        XY[x][y] = true;
+        currBlocks[i].id = 'end_' + x + '_' + y;
+        var j = 0;
+        for (j = 0; j < 10; j++) {
+            if (!XY[j][y])break;
+        }
+        if (j == 10)lines.push(y);
+    }
+    currBlocks = [];
+    var N = lines.length;
+    if (N > 0) {
+        gScore += addScores[N]; //加分
+        gLevelScroe += addScores[N]; //加分
+        dvScore.innerHTML = gScore;
+        gLines += N;
+        gLevelLines += N;
+        //判断是否升级
+        if (gLevelScroe >= uplevelScroe) {
+            //if(gLevelLines >= uplevelLines){
+            if (currLevel < levels.length - 1)currLevel++;
+            else alert("\u997F\u5730\u795E\u554A\uFF0C\u8FD9\u4E00\u5173\u90FD\u80FD\u8FC7\uFF0C\u770B\u6765\u4E16\u95F4\u6CA1\u6709\u51E0\u4EF6\u4E8B\u53EF\u4EE5\u96BE\u9053\u5927\u4FA0\u4F60\u4E86\uFF0C\u6211\u770B\u597D\u4F60\u54DF\uFF01");
+            currMill = levels[currLevel];
+            dvLevel.innerHTML = currLevel + 1;
+            gLevelLines = gLines % uplevelLines;
+            gLevelScroe = gScore % uplevelScroe;
+        }
+        //开始消行
+        for (var i = 0; i < N; i++) {
+            for (var j = 0; j < 10; j++) {
+                dvBlocks.removeChild($('end_' + j + '_' + lines[i]));
+                XY[j][lines[i]] = false;
+            }
+        }
+        lines = lines.sort();
+        var yadds = []; //记录每行各要下落几行
+        for (var i = N - 1; i >= 0; i--) {
+            for (var j = lines[i] - 1; j >= 0; j--) {
+                yadds[j] = (yadds[j] || 0) + 1;
+            }
+            yadds[lines[i]] = 0;
+        }
+        //循环下移各行
+        for (var j = lines[N - 1] - 1; j >= 0; j--) {
+            var addy = yadds[j];
+            if (addy > 0)
+                for (var i = 0; i < 10; i++) {
+                    if (XY[i][j]) {
+                        XY[i][j] = false;
+                        XY[i][j + addy] = true;
+                        var obj = $('end_' + i + '_' + j);
+                        obj.className = obj.className.replace("y" + j, "y" + (j + addy));
+                        obj.id = 'end_' + i + '_' + (j + addy);
+                    }
+                }
+        }
+    }
+    dropNewBlock();
+}
+function rotate(T) {
+    var xy = layout[T].xy;
+    if (xy.length < 2)return;
+    var curr2 = ((curr + cfg.direction) + xy.length) % xy.length;
+    var d = xy[curr2];
+    var color = "c" + currColor;
+    var cxmin = d[2][0], cxmax = d[2][1];
+    var x = currX, y = currY;
+    //旋转时靠边，则可能需要平移
+    if (x + cxmin < 0) x = 0;
+    else if (x + cxmax > 9) x = 9 - cxmax;
+    //判断是否能够旋转，即旋转后的占位在现在是否都为空
+    for (var i = 0; i < 4; i++) {
+        if (XY[x + d[0][i]][y + d[1][i]]) {
+            return;
+        }
+    }
+    //旋转
+    curr = curr2;
+    currX = x;
+    for (var i = 0; i < 4; i++) {
+        currBlocks[i].className = color + " x" + (x + d[0][i]) + " y" + (y + d[1][i]);
+    }
+}
+//自然下落一步
+function down_T() {
+    var nowCannotDown = !canMove4(T, 0, 1);
+    var nowCannotLeft = !canMove4(T, -1, 0);
+    var nowCannotRight = !canMove4(T, 1, 0);
+    if (lastCannotDown && nowCannotDown || nowCannotLeft && nowCannotRight && nowCannotDown) {
+        end(T);
+        lastCannotDown = nowCannotDown = nowCannotLeft = nowCannotRight = false;
+        return false;
+    }
+    timer_down = setTimeout(down_T, currMill);
+    nowCannotDown = !canMove4(T, 0, 1);
+    if (nowCannotDown) {
+        lastCannotDown = true;
+    } else {
+        move(T, 0, 1);
+    }
+    return true;
+}
+//手动移动一步
+function move_1step(T, x, y) {
+    if (!canMove4(T, x, y)) {
+        return false;
+    }
+    move(T, x, y);
+    return true;
+}
+//直接快速落地
+function move_quickdown(T) {
+    var y = 0;
+    while (canMove4(T, 0, y + 1))y++;
+    if (y) {
+        move(T, 0, y);
+        end(T);
+    }
+}
+function canMove4(T, addx, addy) {
+    var xy = layout[T].xy[curr];
+    var x0 = currX + addx, y0 = currY + addy;
+    for (var i = 0; i < 4; i++) {
+        var x = x0 + xy[0][i], y = y0 + xy[1][i];
+        if (x < 0 || x > 9 || y > 19 || XY[x][y]) return false;
+    }
+    return true;
+}
+function resetGame() {
+    if (gStatus == st_playing || gStatus == st_paused) {
+        if (!confirm("\u8981\u7EC8\u6B62\u5F53\u524D\u6E38\u620F\u91CD\u65B0\u5F00\u59CB\u5417\uFF1F"))
+            return false;
+    }
+    display(dvGameOver, false);
+    display(dvGameOverBg, false);
+    dvScore.innerHTML = "0";
+    currLevel = cfg.startLevel;
+    currMill = levels[currLevel];
+    dvLevel.innerHTML = currLevel + 1;
+    if (timer_down)clearTimeout(timer_down);
+    if (timer_movie)clearTimeout(timer_movie);
+    if (timer_ani)clearInterval(timer_ani);
+    gStatus = st_ready;
+    gScore = 0;
+    gLines = 0;
+    gLevelLines = 0;
+    gLevelScroe = 0;
+    dvBlocks.innerHTML = "";
+    XY.reset();
+    return true;
+}
+function startNewGame() {
+    if (!resetGame())return false;
+    gStatus = st_playing;
+    dropNewBlock();
+}
+
+//动画，填满空格，用于游戏结束后
+function movie() {
+    if (movieY > -10) timer_movie = setTimeout(movie, 50);
+    else {
+        movieY = 19, movieX = 0, clearTimeout(timer_movie);
+    }
+    for (var y = movieY--, x = 0; y < 20 && x < 10; y++, x++) {
+        if (y >= 0 && !XY[x][y])
+            draw1(Math.floor(Math.random() * 7), x, y, true);
+    }
+}
+function animate() {
+    if (timer_ani)clearInterval(timer_ani);
+    timer_ani = window.setInterval(function () {
+        if (aniTime >= 1.6 * 6)aniTime = 0;
+        //跳3下，停2秒
+        if (aniTime > 5.2) {
+            clearInterval(timer_ani);
+            aniTime -= 4.8;
+            setTimeout(animate, 2000);
+        }
+        var x = aniTime - Math.floor(aniTime / 1.6) * 1.6;
+        x = (x > 0.8) ? (1.59 - x) : x;
+        dvGameOver.style.top = Math.floor(720 * x * x) + 'px';
+        aniTime += 0.03;
+    }, 50);
+}
+
+window.onload = function (evt) {
+    var dvs = [dvTabUI, dvTabAbout];
+    $each(dvs, (function (e, i) {
+        e.onclick = function (evt) {
+            if (this.className == "focus")return;
+            var ele = this;
+            $each(dvs, function (e, i) {
+                e.className = e == ele ? "focus" : "blur";
+                display(eval(e.id + '_C'), e == ele);
+            })
+        }
+    }));
+
+    currLevel = cfg.startLevel;
+    dvLevel.innerHTML = currLevel + 1;
+    dvScore.innerHTML = "0";
+
+    display(dvGrid, cfg.ui.grid);
+    display(dvNextOutF, cfg.ui.next);
+    $("ckGrid").checked = cfg.ui.grid;
+    seLevel.value = cfg.startLevel + '';
+
+    //初始化放置一些方块在场景中
+    currColor = 0, draw4(6, 2, 4, true);
+    currColor = 1, draw4(4, 5, 5, true);
+    currColor = 2, draw4(2, 6, 8, true);
+    currColor = 3, draw4(1, 2, 8, true);
+    currColor = 4, draw4(0, 2, 12, true);
+    currColor = 5, draw4(5, 6, 12, true);
+    currColor = 6, draw4(3, 2, 16, true);
+    viewNext();
+
+    $("seBlockSkin").onchange = function (evt) {
+        setBlockSkin(this.value);
+        cfg.ui.skin = parseInt(this.value);
+    }
+    $("ckGrid").onclick = function (evt) {
+        display(dvGrid, this.checked);
+        cfg.ui.grid = this.checked;
+    }
+    seLevel.onchange = function () {
+        cfg.startLevel = parseInt(seLevel.value);
+        if (gStatus == st_playing || gStatus == st_paused) startNewGame();
+        else resetGame();
+        seLevel.blur();
+    }
+};
+</script>
+<!--[if IE 6]>
+<script type="text/javascript">try {
+    document.execCommand('BackgroundImageCache', false, true)
+} catch (e) {
+}</script>
+<![endif]-->
+</body>
+</html>

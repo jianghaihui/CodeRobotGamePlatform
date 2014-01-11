@@ -1,0 +1,81 @@
+package com.crgp.game.client;
+
+import java.io.InputStream;
+import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.crgp.game.client.message.DataMessage;
+import com.crgp.game.client.message.Message;
+
+public class Client {
+	public static String IP = "127.0.0.1";
+	public static int PORT = 15000;
+
+	private static Socket sendClient;
+	private static Socket receiveClient;
+
+	private static Map<String, Action> actionMap = new HashMap<String, Action>();
+
+	private static Socket getSendClient() throws Exception {
+		if (sendClient == null) {
+			try {
+				sendClient = new Socket(IP, PORT);
+				sendClient.setKeepAlive(true);
+			} catch (Exception e) {
+				throw new Exception("通讯服务客户端错误！");
+			}
+		}
+		return sendClient;
+	}
+
+	private static Socket getReceiveClient() throws Exception {
+		if (receiveClient == null) {
+			try {
+				receiveClient = new Socket(IP, PORT);
+				receiveClient.setKeepAlive(true);
+			} catch (Exception e) {
+				throw new Exception("通讯服务客户端错误！");
+			}
+		}
+		return receiveClient;
+	}
+
+	public static void registAction(String name, Action action) {
+		actionMap.put(name, action);
+	}
+
+	public static DataMessage send(Message message) {
+		try {
+			getSendClient().getOutputStream().write(
+					message.getMessage().getBytes());
+			if (message.hasReceipt()) {
+				InputStream is = getSendClient().getInputStream();
+
+				byte[] b = new byte[1024];
+				is.read(b);
+				return new DataMessage(new String(b));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	class Loopper implements Runnable {
+		@Override
+		public void run() {
+			while (true) {
+
+				byte[] b = new byte[1024];
+				try {
+					int offset = is.read(b);
+
+					Thread.sleep(10);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+}

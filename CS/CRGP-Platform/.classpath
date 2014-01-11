@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="libs/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="libs/jaxen-1.1.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CRGP-Base-Game"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CRGP-Base-Client-Java"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CRGP-Base-Robot-Java"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CRGP-Server"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,0 +1,36 @@
+.mini-basic-button {
+}
+
+.mini-basic-button-clicked {
+    background-color: #999999;
+}
+
+.mini-basic-button-clicked-hasmini {
+    background-image: url(../../../images/mini/mini.gif) !important;
+    background: url(../../../images/mini/mini.gif);
+    background-repeat: repeat-x;
+}
+
+.mini-win-descreption-tbar {
+    background-image: url(../../../images/mini/_help.gif) !important;
+}
+
+.mini-win-rank2 {
+    background-image: url(../../../images/mini/rank2.gif) !important;
+}
+
+.mini-win-rank1 {
+    background-image: url(../../../images/mini/rank1.gif) !important;
+}
+
+.mini-win-rank0 {
+    background-image: url(../../../images/mini/rank0.gif) !important;
+}
+
+#mini-panel-div {
+    vertical-align: middle;
+}
+
+.icon-mini-win {
+    background-image: url(../../../images/mini/win.png) !important;
+}

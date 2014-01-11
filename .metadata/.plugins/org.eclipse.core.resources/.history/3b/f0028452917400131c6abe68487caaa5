@@ -1,0 +1,29 @@
+package com.crgp.client;
+
+import java.net.Socket;
+
+import com.crgp.game.BaseGame;
+
+public class Client {
+	public static String IP = "127.0.0.1";
+	public static int PORT = 15000;
+
+	private static Socket client;
+	private static BaseGame game;
+
+	public static void registGame(BaseGame game) {
+		Client.game = game;
+	}
+
+	private static Socket getClient() throws Exception {
+		if (client == null) {
+			try {
+				client = new Socket(IP, PORT);
+				client.setKeepAlive(true);
+			} catch (Exception e) {
+				throw new Exception("通讯服务客户端错误！");
+			}
+		}
+		return client;
+	}
+}
