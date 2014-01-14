@@ -30,7 +30,7 @@ import com.crgp.platform.xml.bean.RobotBean;
  * @author XJiang
  * 
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
+@SuppressWarnings( { "unchecked" })
 public class MainWindow extends JFrame {
 	private static final long serialVersionUID = -2268430829092944845L;
 
@@ -276,6 +276,19 @@ public class MainWindow extends JFrame {
 
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
+					for (int i = 0; i < game.getRobots().length; i++) {
+						Object obj = getSelectRobotList().getModel()
+								.getElementAt(i);
+						if (obj instanceof RobotBean) {
+							try {
+								RobotBean bean = (RobotBean) obj;
+								game.getRobots()[i] = bean.getUID();
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}
+
 					game.launch(gameLauncher.getParams());
 					getRunButton().setEnabled(true);
 					getRunOneButton().setEnabled(true);
@@ -308,8 +321,9 @@ public class MainWindow extends JFrame {
 								System.out.println("run");
 
 								game.launch(gameLauncher.getParams());
-
-								game.run(10, 5000);
+								game.setRunSpace(200);
+								game.setMaxPlayTime(1000);
+								game.run();
 
 								while (!game.isEnd()) {
 									try {
@@ -344,7 +358,7 @@ public class MainWindow extends JFrame {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					game.runOne();
+					game.runOneStep();
 				}
 			});
 		}

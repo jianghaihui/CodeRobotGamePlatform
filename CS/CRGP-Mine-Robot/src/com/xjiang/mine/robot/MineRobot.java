@@ -1,5 +1,7 @@
 package com.xjiang.mine.robot;
 
+import java.util.Map;
+
 import com.crgp.game.client.message.ActionMessage;
 import com.crgp.game.client.message.DataMessage;
 import com.crgp.game.client.message.Message;
@@ -9,8 +11,13 @@ public abstract class MineRobot extends BaseRobot {
 	public static final String GAME_UID = "CRGP-Mine-Game";
 
 	@Override
-	public final synchronized void play(int code) {
-		play();
+	public String GameUID() {
+		return GAME_UID;
+	}
+
+	@Override
+	public final synchronized Map<String, String> play(int code) {
+		return play();
 	}
 
 	/**
@@ -18,7 +25,7 @@ public abstract class MineRobot extends BaseRobot {
 	 * 该方法只允许调用一次click；<BR>
 	 * 调用click后执行器会收回机器人的代码执行权限，即click方法后面的代码不会被执行, 等待下一次调用play<BR>
 	 */
-	public abstract void play();
+	public abstract Map<String, String> play();
 
 	// -------------------------
 	// ---
@@ -32,9 +39,8 @@ public abstract class MineRobot extends BaseRobot {
 	 */
 	public final int getWidth() {
 		// 构建求情消息
-		ActionMessage actionMessage = new ActionMessage(
-				Message.SOURCE_TYPE_ROBOT, UID(), Message.SOURCE_TYPE_GAME,
-				GAME_UID);
+		ActionMessage actionMessage = new ActionMessage(Message.TYPE_ROBOT,
+				RobotUID(), Message.TYPE_GAME, GAME_UID);
 		actionMessage.setActionName("getWidth");
 		actionMessage.setHasReceipt(true);
 
@@ -52,9 +58,8 @@ public abstract class MineRobot extends BaseRobot {
 	 */
 	public final int getHeight() {
 		// 构建求情消息
-		ActionMessage actionMessage = new ActionMessage(
-				Message.SOURCE_TYPE_ROBOT, UID(), Message.SOURCE_TYPE_GAME,
-				GAME_UID);
+		ActionMessage actionMessage = new ActionMessage(Message.TYPE_ROBOT,
+				RobotUID(), Message.TYPE_GAME, GAME_UID);
 		actionMessage.setActionName("getHeight");
 		actionMessage.setHasReceipt(true);
 
@@ -72,9 +77,8 @@ public abstract class MineRobot extends BaseRobot {
 	 */
 	public final int getMineCount() {
 		// 构建求情消息
-		ActionMessage actionMessage = new ActionMessage(
-				Message.SOURCE_TYPE_ROBOT, UID(), Message.SOURCE_TYPE_GAME,
-				GAME_UID);
+		ActionMessage actionMessage = new ActionMessage(Message.TYPE_ROBOT,
+				RobotUID(), Message.TYPE_GAME, GAME_UID);
 		actionMessage.setActionName("getMineCount");
 		actionMessage.setHasReceipt(true);
 
@@ -95,11 +99,12 @@ public abstract class MineRobot extends BaseRobot {
 	 */
 	public final void click(int x, int y) {
 		// 构建求情消息
-		ActionMessage actionMessage = new ActionMessage(
-				Message.SOURCE_TYPE_ROBOT, UID(), Message.SOURCE_TYPE_GAME,
-				GAME_UID);
+		ActionMessage actionMessage = new ActionMessage(Message.TYPE_ROBOT,
+				RobotUID(), Message.TYPE_GAME, GAME_UID);
 		actionMessage.setActionName("click");
 		actionMessage.setHasReceipt(false);
+		actionMessage.addParam("x", x + "");
+		actionMessage.addParam("y", y + "");
 
 		// 发送消息
 		client.send(actionMessage);
@@ -112,10 +117,9 @@ public abstract class MineRobot extends BaseRobot {
 	 */
 	public final int[][] getMap() {
 		// 构建求情消息
-		ActionMessage actionMessage = new ActionMessage(
-				Message.SOURCE_TYPE_ROBOT, UID(), Message.SOURCE_TYPE_GAME,
-				GAME_UID);
-		actionMessage.setActionName("getMineCount");
+		ActionMessage actionMessage = new ActionMessage(Message.TYPE_ROBOT,
+				RobotUID(), Message.TYPE_GAME, GAME_UID);
+		actionMessage.setActionName("getMap");
 		actionMessage.setHasReceipt(true);
 
 		// 发送消息并获取结果数据
@@ -125,7 +129,7 @@ public abstract class MineRobot extends BaseRobot {
 		String tmp1 = dataMessage.getData("map");
 		tmp1 = tmp1.substring(1, tmp1.length() - 1);
 
-		String as1[] = tmp1.split(",");
+		String as1[] = tmp1.split("\\|");
 		int[][] arrays = new int[as1.length][];
 		for (int i = 0; i < as1.length; i++) {
 			String tmp2 = as1[i];
@@ -134,7 +138,7 @@ public abstract class MineRobot extends BaseRobot {
 			String as2[] = tmp2.split(",");
 			arrays[i] = new int[as2.length];
 			for (int j = 0; j < as2.length; j++) {
-				arrays[i][j] = Integer.parseInt(as2[j]);
+				arrays[i][j] = Integer.parseInt(as2[j].trim());
 			}
 		}
 		return arrays;

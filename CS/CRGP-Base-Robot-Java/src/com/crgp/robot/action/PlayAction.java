@@ -15,8 +15,22 @@ public class PlayAction extends Action {
 	}
 
 	@Override
-	public Map<String, String> execute(ActionMessage message) throws Exception {
-		robot.play(Integer.parseInt(message.getParam("code")));
+	public Map<String, String> execute(final ActionMessage message)
+			throws Exception {
+		final Thread playThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					Map<String, String> resultMap = robot.play(Integer
+							.parseInt(message.getParam("code")));
+					robot.playEnd(resultMap);
+				} catch (Exception e) {
+					System.err.println(message.getParam("code"));
+					e.printStackTrace();
+				}
+			}
+		});
+		playThread.start();
 		return null;
 	}
 

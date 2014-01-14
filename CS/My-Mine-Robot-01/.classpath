@@ -2,14 +2,14 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="libs/dom4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="libs/jaxen-1.1.1.jar"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CRGP-Base-Game"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CRGP-Base-Client-Java"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CRGP-Base-Robot-Java"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CRGP-Mine-Game"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CRGP-Mine-Robot"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CRGP-Platform"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/CRGP-Server"/>
+	<classpathentry kind="lib" path="plibs/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="plibs/jaxen-1.1.1.jar"/>
+	<classpathentry kind="lib" path="libs/crgp.base.client.java.jar"/>
+	<classpathentry kind="lib" path="libs/crgp.base.game.jar"/>
+	<classpathentry kind="lib" path="libs/crgp.base.robot.java.jar"/>
+	<classpathentry kind="lib" path="libs/crgp.platform.jar"/>
+	<classpathentry kind="lib" path="libs/crgp.server.jar"/>
+	<classpathentry kind="lib" path="libs/crgp.xjiang.mine.game.jar"/>
+	<classpathentry kind="lib" path="libs/crgp.xjiang.mine.robot.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

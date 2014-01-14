@@ -23,13 +23,13 @@ public class MapAction extends Action {
 		String tmp = "";
 		for (int i = 0; i < arrays.length; i++) {
 			if (i > 0) {
-				tmp = tmp + ",";
+				tmp = tmp + "|";
 			}
 			tmp = tmp + Arrays.toString(arrays[i]);
 		}
 		tmp = "[" + tmp + "]";
 
-		map.put("mineCount", tmp);
+		map.put("map", tmp);
 		return map;
 	}
 }

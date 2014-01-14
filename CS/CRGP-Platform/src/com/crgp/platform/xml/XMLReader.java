@@ -33,8 +33,7 @@ public class XMLReader {
 		for (int i = 0; i < robotList.length; i++) {
 			Element element = paramNodes.get(i);
 			RobotBean bean = new RobotBean();
-			bean.setClassPath(element.attributeValue("class"));
-			bean.setName(element.attributeValue("name"));
+			bean.setUID(element.attributeValue("UID"));
 			robotList[i] = bean;
 		}
 

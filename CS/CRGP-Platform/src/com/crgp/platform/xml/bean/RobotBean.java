@@ -1,27 +1,18 @@
 package com.crgp.platform.xml.bean;
 
 public class RobotBean {
-	private String name;
-	private String classPath;
+	private String UID;
 
-	public String getName() {
-		return name;
+	public String getUID() {
+		return UID;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getClassPath() {
-		return classPath;
-	}
-
-	public void setClassPath(String classPath) {
-		this.classPath = classPath;
+	public void setUID(String uID) {
+		UID = uID;
 	}
 
 	@Override
 	public String toString() {
-		return name;
+		return UID;
 	}
 }

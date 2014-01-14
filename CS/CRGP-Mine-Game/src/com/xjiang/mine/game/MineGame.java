@@ -5,30 +5,20 @@ import java.util.Map;
 import javax.swing.JPanel;
 
 import com.crgp.game.BaseGame;
-import com.xjiang.mine.game.action.ClickAction;
 import com.xjiang.mine.game.action.HeightAction;
 import com.xjiang.mine.game.action.MapAction;
 import com.xjiang.mine.game.action.MineCountAction;
 import com.xjiang.mine.game.action.WidthAction;
 import com.xjiang.mine.game.ui.MineView;
 
-@SuppressWarnings("deprecation")
 public class MineGame extends BaseGame {
 	private MineView view;
-
-	private Thread mainThread;
-
-	private boolean isRun = false;
-	private boolean isEnd = false;
-
-	private String robot;
 
 	public MineGame() {
 		client.registAction("getWidth", new WidthAction(this));
 		client.registAction("getHeight", new HeightAction(this));
 		client.registAction("getMineCount", new MineCountAction(this));
 		client.registAction("getMap", new MapAction(this));
-		client.registAction("click", new ClickAction(this));
 	}
 
 	@Override
@@ -37,7 +27,7 @@ public class MineGame extends BaseGame {
 	}
 
 	@Override
-	public String UID() {
+	public String GameUID() {
 		return "CRGP-Mine-Game";
 	}
 
@@ -55,97 +45,41 @@ public class MineGame extends BaseGame {
 
 	@Override
 	public final void launch(Map<String, String> params) {
-		robot = robots[0];
-
-		isEnd = false;
 		view.init();
 		view.repaint();
 
-		if (robot == null) {
+		if (robots[0] == null) {
 			view.initEvent();
 		}
 	}
 
 	@Override
-	public final void run(final long space, final long step) {
-		if (robot != null) {
-			mainThread = new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					while (true) {
-						if (view.isSucceed() || view.isFail()) {
-							isEnd = true;
-							isRun = false;
-							break;
-						}
-
-						final Thread robotThread = new Thread(new Runnable() {
-							@Override
-							public void run() {
-								isRun = true;
-								play(robot, 0);
-								isRun = false;
-							}
-						});
-
-						// 监控线程,等待一个单步时间,如果机器人没有在单步时间内结束,则强制结束机器人线程
-						final Thread controlThread = new Thread(new Runnable() {
-							@Override
-							public void run() {
-								try {
-									Thread.sleep(step);
-								} catch (InterruptedException e) {
-									e.printStackTrace();
-								}
-								if (robotThread.isAlive()) {
-									System.out.println("Stop");
-									robotThread.stop();
-									isRun = false;
-								}
-							}
-						});
-
-						robotThread.start();
-						controlThread.start();
-
-						// 等待上一次机器人代码执行结束
-						while (isRun) {
-							try {
-								Thread.sleep(0);
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							}
-						}
-						// 等待一个命令间隔
-						try {
-							Thread.sleep(space);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			});
-
-			mainThread.start();
-		}
+	public boolean isEnd() {
+		return view.isSucceed() || view.isFail();
 	}
 
 	@Override
-	public final void runOne() {
-		if (robot != null) {
-			if (view.isSucceed() || view.isFail()) {
-				isEnd = true;
+	public void playEnd(Map<String, String> playResult) {
+		// 验证执行结果
+		String xTmp = playResult.get("x");
+		String yTmp = playResult.get("y");
+		if (xTmp != null && yTmp != null) {
+			int x;
+			int y;
+			try {
+				x = Integer.parseInt(xTmp);
+				y = Integer.parseInt(yTmp);
+
+				view.click(x, y);
+				view.repaint();
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+				System.err.println("MineGame.playEnd : " + "执行结果解析错误: " + xTmp
+						+ " " + yTmp);
 			}
-			isRun = true;
-			play(robot, 0);
-			isRun = false;
 		}
-	}
 
-	@Override
-	public final boolean isEnd() {
-		return isEnd;
+		isPlayable = false;
 	}
 
 	// -------------------------
@@ -179,31 +113,6 @@ public class MineGame extends BaseGame {
 	 */
 	public final int getMineCount() {
 		return view.getMine_size();
-	}
-
-	/**
-	 * [SLOT]点击一个雷点
-	 * 
-	 * @param x
-	 *            横向位置
-	 * @param y
-	 *            纵向位置
-	 */
-	public final void click(int x, int y) {
-		view.click(x, y);
-
-		isRun = false;
-
-		view.repaint();
-
-		Thread.currentThread().stop();
-
-		try {
-			Thread.sleep(1);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
 	}
 
 	/**

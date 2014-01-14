@@ -18,7 +18,7 @@ public class UIDAction extends Action {
 	@Override
 	public Map<String, String> execute(ActionMessage message) throws Exception {
 		Map<String, String> map = new HashMap<String, String>();
-		map.put("UID", robot.UID());
+		map.put("UID", robot.RobotUID());
 		return map;
 	}
 

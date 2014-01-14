@@ -2,7 +2,9 @@ package com.jhs.mine.robot;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import com.xjiang.mine.robot.MineRobot;
@@ -10,12 +12,12 @@ import com.xjiang.mine.robot.MineRobot;
 public class MineRobot01 extends MineRobot {
 
 	@Override
-	public String UID() {
+	public String RobotUID() {
 		return "jhs_mine_robot_01";
 	}
 
 	@Override
-	public synchronized void play() {
+	public synchronized Map<String, String> play() {
 		int[][] map = getMap();
 
 		Set<Point> mines = new HashSet<Point>();
@@ -37,16 +39,21 @@ public class MineRobot01 extends MineRobot {
 			p = ps.get(ram);
 			System.out.println("random end " + p.x + " -- " + p.y);
 		}
-		click(p.x, p.y);
+
+		Map<String, String> resultMap = new HashMap<String, String>();
+		resultMap.put("x", p.x + "");
+		resultMap.put("y", p.y + "");
+
+		return resultMap;
 	}
 
 	private Point loopSearch(Set<Point> mines) {
 		int[][] map = getMap();
 
-		// ¿ÉÄÜÓĞÀ×µÄÎ»ÖÃ
+		// å¯èƒ½æœ‰é›·çš„ä½ç½®
 		ArrayList<Point> maybeHasMines = new ArrayList<Point>();
 
-		// ¼ÆËãÓĞÀ×µÄÎ»ÖÃ
+		// è®¡ç®—æœ‰é›·çš„ä½ç½®
 		for (int i = 0; i < map.length; i++) {
 			for (int j = 0; j < map[i].length; j++) {
 				int info = map[i][j];
@@ -61,7 +68,7 @@ public class MineRobot01 extends MineRobot {
 				}
 			}
 		}
-		// ¼ÆËãÎŞÀ×µÄÎ»ÖÃ,Ëã·¨1
+		// è®¡ç®—æ— é›·çš„ä½ç½®,ç®—æ³•1
 		for (int i = 0; i < map.length; i++) {
 			for (int j = 0; j < map[i].length; j++) {
 				int info = map[i][j];
