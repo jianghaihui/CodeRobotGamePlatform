@@ -45,6 +45,7 @@ public class MineGame extends BaseGame {
 
 	@Override
 	public final void launch(Map<String, String> params) {
+		super.launch(params);
 		view.init();
 		view.repaint();
 
@@ -78,8 +79,7 @@ public class MineGame extends BaseGame {
 						+ " " + yTmp);
 			}
 		}
-
-		isPlayable = false;
+		super.playEnd(playResult);
 	}
 
 	// -------------------------

@@ -21,7 +21,7 @@ public abstract class BaseGame {
 	 * 每次调用click方法后,isClickable被设置为false;<BR>
 	 * 执行play代码后,如果玩家的代码执行超时,isClickable被设置为false;<BR>
 	 */
-	protected boolean isPlayable = false;
+	private boolean isPlayable = false;
 
 	/**
 	 * 机器人是否异步执行.
@@ -41,6 +41,8 @@ public abstract class BaseGame {
 	 * 运行间隔时间(运行速度)
 	 */
 	protected long runSpace;
+
+	private int playCode = 0;
 
 	public BaseGame() {
 		try {
@@ -67,6 +69,8 @@ public abstract class BaseGame {
 					if (monitorTimer - unit <= 0) {
 						monitorTimer = -1;
 						isPlayable = false;
+						System.out.println("监控线程 ：超时 " + maxPlayTime + " - "
+								+ monitorTimer);
 					} else {
 						monitorTimer -= unit;
 						try {
@@ -118,7 +122,11 @@ public abstract class BaseGame {
 	 */
 	public abstract JPanel createView();
 
-	public abstract void launch(Map<String, String> params);
+	public void launch(Map<String, String> params) {
+		isPlayable = false;
+		playCode = 0;
+		monitorTimer = -1;
+	}
 
 	public final void run() {
 		if (isAsyn) {
@@ -133,7 +141,8 @@ public abstract class BaseGame {
 							String robot = robots[i];
 
 							isPlayable = true;
-							play(robot, 0);
+							playCode++;
+							play(robot, playCode);
 							monitorTimer = getMaxPlayTime();
 
 							waitForPlay();
@@ -157,9 +166,10 @@ public abstract class BaseGame {
 					while (true) {
 						isPlayable = true;
 
+						playCode++;
 						for (int i = 0; i < robots.length; i++) {
 							String robot = robots[i];
-							play(robot, 0);
+							play(robot, playCode);
 						}
 
 						monitorTimer = getMaxPlayTime();
@@ -183,7 +193,8 @@ public abstract class BaseGame {
 				String robot = robots[i];
 
 				isPlayable = true;
-				play(robot, 0);
+				playCode++;
+				play(robot, playCode);
 				monitorTimer = getMaxPlayTime();
 
 				if (isEnd()) {
@@ -196,9 +207,10 @@ public abstract class BaseGame {
 			// 如果不是异步执行的,让每个机器人同时执行play代码
 			isPlayable = true;
 
+			playCode++;
 			for (int i = 0; i < robots.length; i++) {
 				String robot = robots[i];
-				play(robot, 0);
+				play(robot, playCode);
 			}
 
 			monitorTimer = getMaxPlayTime();
@@ -216,7 +228,9 @@ public abstract class BaseGame {
 	 */
 	public abstract boolean isEnd();
 
-	public abstract void playEnd(Map<String, String> playResult);
+	public void playEnd(Map<String, String> playResult) {
+		isPlayable = false;
+	}
 
 	private void waitForPlay() {
 		// 等待上一次机器人代码执行结束
@@ -281,6 +295,10 @@ public abstract class BaseGame {
 
 	public void setMaxPlayTime(long maxPlayTime) {
 		this.maxPlayTime = maxPlayTime;
+	}
+
+	public int getPlayCode() {
+		return playCode;
 	}
 
 	// -------------------------

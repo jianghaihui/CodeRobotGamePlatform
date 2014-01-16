@@ -61,8 +61,7 @@ public class MainWindow extends JFrame {
 	public MainWindow(GameBean gameLauncher) throws Exception {
 		this.gameLauncher = gameLauncher;
 
-		Class<BaseGame> c = (Class<BaseGame>) Class.forName(gameLauncher
-				.getLaunchClass());
+		Class<BaseGame> c = (Class<BaseGame>) Class.forName(gameLauncher.getLaunchClass());
 		game = c.newInstance();
 
 		initUI();
@@ -129,20 +128,17 @@ public class MainWindow extends JFrame {
 
 				allRobotList = new JList(model);
 				allRobotList.setBorder(new LineBorder(Color.gray));
-				allRobotList.setBounds(getGameView().getWidth(), TOOL_HEIGHT,
-						ROBOT_LIST_WIDTH, getGameView().getHeight() / 2);
+				allRobotList.setBounds(getGameView().getWidth(), TOOL_HEIGHT, ROBOT_LIST_WIDTH, getGameView()
+						.getHeight() / 2);
 
 				allRobotList.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mouseClicked(MouseEvent event) {
-						if (event.getClickCount() == 2
-								&& event.getButton() == MouseEvent.BUTTON1) {
+						if (event.getClickCount() == 2 && event.getButton() == MouseEvent.BUTTON1) {
 							Object selectItem = allRobotList.getSelectedValue();
 							if (selectItem != null) {
-								if (getSelectRobotList().getModel().getSize() < game
-										.playerCount()) {
-									((DefaultListModel) getSelectRobotList()
-											.getModel()).addElement(selectItem);
+								if (getSelectRobotList().getModel().getSize() < game.playerCount()) {
+									((DefaultListModel) getSelectRobotList().getModel()).addElement(selectItem);
 								}
 							}
 						}
@@ -159,53 +155,46 @@ public class MainWindow extends JFrame {
 		if (selectRobotList == null) {
 			selectRobotList = new JList(new DefaultListModel());
 			selectRobotList.setBorder(new LineBorder(Color.gray));
-			selectRobotList.setBounds(getGameView().getWidth(), TOOL_HEIGHT
-					+ getGameView().getHeight() / 2, ROBOT_LIST_WIDTH,
-					getGameView().getHeight() / 2 - ROBOT_LIST_TOOL_HEIGHT);
+			selectRobotList.setBounds(getGameView().getWidth(), TOOL_HEIGHT + getGameView().getHeight() / 2,
+					ROBOT_LIST_WIDTH, getGameView().getHeight() / 2 - ROBOT_LIST_TOOL_HEIGHT);
 
 			selectRobotList.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent event) {
-					if (event.getClickCount() == 2
-							&& event.getButton() == MouseEvent.BUTTON1) {
+					if (event.getClickCount() == 2 && event.getButton() == MouseEvent.BUTTON1) {
 						Object selectItem = selectRobotList.getSelectedValue();
 						if (selectItem != null) {
 							if (selectItem instanceof RobotBean) {
-								((DefaultListModel) getSelectRobotList()
-										.getModel()).removeElement(selectItem);
+								((DefaultListModel) getSelectRobotList().getModel()).removeElement(selectItem);
 							} else {
-								((DefaultListModel) getSelectRobotList()
-										.getModel()).removeElement(selectItem);
+								((DefaultListModel) getSelectRobotList().getModel()).removeElement(selectItem);
 							}
 						}
 					}
 				}
 			});
 
-			selectRobotList.getModel().addListDataListener(
-					new ListDataListener() {
+			selectRobotList.getModel().addListDataListener(new ListDataListener() {
 
-						@Override
-						public void intervalRemoved(ListDataEvent arg0) {
-							if (getSelectRobotList().getModel().getSize() < game
-									.playerCount()) {
-								getLaunchButton().setEnabled(false);
-							}
-						}
+				@Override
+				public void intervalRemoved(ListDataEvent arg0) {
+					if (getSelectRobotList().getModel().getSize() < game.playerCount()) {
+						getLaunchButton().setEnabled(false);
+					}
+				}
 
-						@Override
-						public void intervalAdded(ListDataEvent arg0) {
-							if (getSelectRobotList().getModel().getSize() == game
-									.playerCount()) {
-								getLaunchButton().setEnabled(true);
-							}
-						}
+				@Override
+				public void intervalAdded(ListDataEvent arg0) {
+					if (getSelectRobotList().getModel().getSize() == game.playerCount()) {
+						getLaunchButton().setEnabled(true);
+					}
+				}
 
-						@Override
-						public void contentsChanged(ListDataEvent arg0) {
+				@Override
+				public void contentsChanged(ListDataEvent arg0) {
 
-						}
-					});
+				}
+			});
 		}
 		return selectRobotList;
 	}
@@ -213,8 +202,7 @@ public class MainWindow extends JFrame {
 	public ConsolePanel getConsolePanel() {
 		if (consolePanel == null) {
 			consolePanel = new ConsolePanel();
-			consolePanel.setBounds(0, TOOL_HEIGHT + getGameView().getHeight(),
-					getWidth(), CONSOLE_HIEGHT);
+			consolePanel.setBounds(0, TOOL_HEIGHT + getGameView().getHeight(), getWidth(), CONSOLE_HIEGHT);
 		}
 		return consolePanel;
 	}
@@ -223,9 +211,8 @@ public class MainWindow extends JFrame {
 		if (selectRobotListTool == null) {
 			selectRobotListTool = new JPanel();
 			selectRobotListTool.setLayout(new FlowLayout(FlowLayout.CENTER));
-			selectRobotListTool.setBounds(getGameView().getWidth(), TOOL_HEIGHT
-					+ getGameView().getHeight() - ROBOT_LIST_TOOL_HEIGHT,
-					ROBOT_LIST_WIDTH, ROBOT_LIST_TOOL_HEIGHT);
+			selectRobotListTool.setBounds(getGameView().getWidth(), TOOL_HEIGHT + getGameView().getHeight()
+					- ROBOT_LIST_TOOL_HEIGHT, ROBOT_LIST_WIDTH, ROBOT_LIST_TOOL_HEIGHT);
 
 			selectRobotListTool.add(getUpButton());
 			selectRobotListTool.add(getDownButton());
@@ -257,10 +244,8 @@ public class MainWindow extends JFrame {
 
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					if (getSelectRobotList().getModel().getSize() < game
-							.playerCount()) {
-						((DefaultListModel) getSelectRobotList().getModel())
-								.addElement("Player");
+					if (getSelectRobotList().getModel().getSize() < game.playerCount()) {
+						((DefaultListModel) getSelectRobotList().getModel()).addElement("Player");
 					}
 				}
 			});
@@ -277,8 +262,7 @@ public class MainWindow extends JFrame {
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
 					for (int i = 0; i < game.getRobots().length; i++) {
-						Object obj = getSelectRobotList().getModel()
-								.getElementAt(i);
+						Object obj = getSelectRobotList().getModel().getElementAt(i);
 						if (obj instanceof RobotBean) {
 							try {
 								RobotBean bean = (RobotBean) obj;
@@ -298,7 +282,7 @@ public class MainWindow extends JFrame {
 		return launchButton;
 	}
 
-	private int runTime = 100;
+	private int runTime = 100000;
 
 	public JButton getRunButton() {
 		if (runButton == null) {
@@ -318,11 +302,9 @@ public class MainWindow extends JFrame {
 						@Override
 						public void run() {
 							for (int t = 0; t < runTime; t++) {
-								System.out.println("run");
-
 								game.launch(gameLauncher.getParams());
-								game.setRunSpace(200);
-								game.setMaxPlayTime(1000);
+								game.setRunSpace(10);
+								game.setMaxPlayTime(5000);
 								game.run();
 
 								while (!game.isEnd()) {

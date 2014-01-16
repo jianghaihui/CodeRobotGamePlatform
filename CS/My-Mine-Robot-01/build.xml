@@ -4,7 +4,7 @@
 	<!--添加描述 -->
 	<description>Player-Project</description>
 	<!--添加属性,相当于文件级的全局变量,此处用于设置目录名称 -->
-	<property name="libs-dir" location="libs" />
+	<property name="libs" location="libs" />
 
 	<property name="base-client-java" location="../CRGP-Base-Client-Java/dist/crgp.base.client.java.jar" />
 	<property name="base-game" location="../CRGP-Base-Game/dist/crgp.base.game.jar" />
@@ -24,7 +24,7 @@
 
 	<target name="init" depends="clean">
 		<tstamp />
-		<mkdir dir="${libs-dir}" />
+		<mkdir dir="${libs}" />
 	</target>
 
 	<target name="build" depends="init">
@@ -38,17 +38,17 @@
 	</target>
 
 	<target name="deploy" depends="build">
-		<copy todir="${libs-dir}" file="${base-client-java}" />
-		<copy todir="${libs-dir}" file="${base-game}" />
-		<copy todir="${libs-dir}" file="${base-robot-java}" />
-		<copy todir="${libs-dir}" file="${platform}" />
-		<copy todir="${libs-dir}" file="${server}" />
-		<copy todir="${libs-dir}" file="${game}" />
-		<copy todir="${libs-dir}" file="${robot}" />
+		<copy todir="${libs}" file="${base-client-java}" />
+		<copy todir="${libs}" file="${base-game}" />
+		<copy todir="${libs}" file="${base-robot-java}" />
+		<copy todir="${libs}" file="${platform}" />
+		<copy todir="${libs}" file="${server}" />
+		<copy todir="${libs}" file="${game}" />
+		<copy todir="${libs}" file="${robot}" />
 	</target>
 
 	<target name="clean">
-		<delete dir="${libs-dir}" />
+		<delete dir="${libs}" />
 	</target>
 
 </project>

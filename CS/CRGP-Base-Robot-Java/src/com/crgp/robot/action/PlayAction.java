@@ -23,6 +23,8 @@ public class PlayAction extends Action {
 				try {
 					Map<String, String> resultMap = robot.play(Integer
 							.parseInt(message.getParam("code")));
+
+					resultMap.put("code", message.getParam("code"));
 					robot.playEnd(resultMap);
 				} catch (Exception e) {
 					System.err.println(message.getParam("code"));

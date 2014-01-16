@@ -15,7 +15,12 @@ public class PlayEndAction extends Action {
 
 	@Override
 	public Map<String, String> execute(ActionMessage message) throws Exception {
-		game.playEnd(message.getParams());
+		int code = Integer.parseInt(message.getParam("code"));
+		if (game.getPlayCode() == code) {
+			game.playEnd(message.getParams());
+		} else {
+			System.out.println("过时的PlayEndAction");
+		}
 		return null;
 	}
 }

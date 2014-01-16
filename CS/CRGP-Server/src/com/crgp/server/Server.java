@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import com.crgp.game.client.message.ActionMessage;
 import com.crgp.game.client.message.Message;
 import com.crgp.server.bean.Client;
+import com.crgp.server.util.ByteUtils;
 
 public class Server implements Runnable {
 	public static final String SEND = "SEND";
@@ -34,18 +35,18 @@ public class Server implements Runnable {
 		while (true) {
 			try {
 				Socket s = server.accept();
+				s.setKeepAlive(true);
 
 				InputStream is = s.getInputStream();
 
+				// 读取数据大小
+				byte sb[] = new byte[4];
+				is.read(sb);
+				int size = ByteUtils.byteArrayToInt(sb);
 				// 读取数据
-				String cmd = "";
-				byte[] b = new byte[1024];
-				int length = is.read(b);
-				cmd = new String(b, 0, length);
-				while (length == 1024) {
-					length = is.read(b);
-					cmd = cmd + new String(b, 0, length);
-				}
+				byte b[] = new byte[size];
+				is.read(b);
+				String cmd = new String(b);
 
 				String UID = cmd.split(":")[1];
 				Client client = new Client(UID, s);
@@ -53,14 +54,12 @@ public class Server implements Runnable {
 				if (cmd.startsWith(SEND)) {
 					sendClientList.add(client);
 
-					System.out.println("[SERVER]  :  "
-							+ "服务器接收到握手信号 ：SendClient ：" + cmd);
+					System.out.println("[SERVER]  :  " + "服务器接收到握手信号 ：SendClient ：" + cmd);
 					new Thread(new SendClientProcesser(client)).start();
 				} else if (cmd.startsWith(RECEIVE)) {
 					receiveClientList.add(client);
 
-					System.out.println("[SERVER]  :  "
-							+ "服务器接收到握手信号 ：ReceiveClient ：" + cmd);
+					System.out.println("[SERVER]  :  " + "服务器接收到握手信号 ：ReceiveClient ：" + cmd);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -84,27 +83,27 @@ public class Server implements Runnable {
 				// 如果消息非法,不进行转发.
 				// 根据targetID，在ReceiveClientList中寻找对应的接收端.
 				// 将消息直接转发过去
-				InputStream is;
 				try {
-					// 获取到请求消息
-					is = client.getSocket().getInputStream();
-
-					String cmd = "";
-					byte[] b = new byte[1024];
-					int length = is.read(b);
-					cmd = new String(b, 0, length);
-					while (length == 1024) {
-						length = is.read(b);
-						cmd = cmd + new String(b, 0, length);
+					// 读取数据大小
+					byte sb[] = new byte[4];
+					client.getIS().read(sb);
+					int size = ByteUtils.byteArrayToInt(sb);
+					// 读取数据
+					byte b[] = new byte[1024];
+					int len = client.getIS().read(b);
+					String cmd = new String(b, 0, len);
+					size = size - len;
+					while (size > 0) {
+						len = client.getIS().read(b);
+						cmd = cmd + new String(b, 0, len);
+						size = size - len;
 					}
 
-					System.out.println("[SERVER]  :  "
-							+ "--------------服务器消息处理开始--------------");
+					System.out.println("[SERVER]  :  " + "--------------服务器消息处理开始--------------");
 
-					System.out.println("[SERVER]  :  " + "服务器接收到消息 ：" + cmd);
+					System.out.println("[SERVER]  :  " + "服务器接收到消息 ：(" + size + ")" + cmd);
 
-					ActionMessage message = (ActionMessage) Message
-							.createMessage(cmd);
+					ActionMessage message = (ActionMessage) Message.createMessage(cmd);
 
 					if (message.getSourceType().equals(message.getTargetType())) {
 						continue;
@@ -121,37 +120,42 @@ public class Server implements Runnable {
 					}
 
 					if (receiveClient != null) {
-						System.out.println("[SERVER]  :  " + "找到转发对象 ："
+						System.out.println("[SERVER]  :  " + "找到转发对象 ：(" + cmd.getBytes().length + ")"
 								+ receiveClient.getUID());
 						// 转发消息
-						Socket s = receiveClient.getSocket();
-						s.getOutputStream().write(cmd.getBytes());
-						s.getOutputStream().flush();
+						receiveClient.getOS().write(ByteUtils.intToByteArray(cmd.getBytes().length));
+						receiveClient.getOS().write(cmd.getBytes());
+						receiveClient.getOS().flush();
 
 						System.out.println("[SERVER]  :  " + "转发完成 ");
 						// 如果有返回值，等待返回数据
 						if (message.hasReceipt()) {
 							System.out.println("[SERVER]  :  " + "有返回值，等待返回数据");
 
-							cmd = "";
+							// 读取数据大小
+							sb = new byte[4];
+							receiveClient.getIS().read(sb);
+							size = ByteUtils.byteArrayToInt(sb);
+							// 读取数据
 							b = new byte[1024];
-							length = s.getInputStream().read(b);
-							cmd = new String(b, 0, length);
-							while (length == 1024) {
-								length = s.getInputStream().read(b);
-								cmd = cmd + new String(b, 0, length);
+							len = receiveClient.getIS().read(b);
+							cmd = new String(b, 0, len);
+							size = size - len;
+							while (size > 0) {
+								len = receiveClient.getIS().read(b);
+								cmd = cmd + new String(b, 0, len);
+								size = size - len;
 							}
 
-							System.out.println("[SERVER]  :  " + "收到返回数据 ："
-									+ cmd);
+							System.out.println("[SERVER]  :  " + "收到返回数据 ：(" + size + ")" + cmd);
 							// 将返回至发送回去
-							client.getSocket().getOutputStream().write(
-									cmd.getBytes());
+							client.getOS().write(ByteUtils.intToByteArray(cmd.getBytes().length));
+							client.getOS().write(cmd.getBytes());
+							client.getOS().flush();
 							System.out.println("[SERVER]  :  " + "发送返回数据成功");
 						}
 					}
-					System.out.println("[SERVER]  :  "
-							+ "--------------服务器消息处理结束--------------");
+					System.out.println("[SERVER]  :  " + "--------------服务器消息处理结束--------------");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
