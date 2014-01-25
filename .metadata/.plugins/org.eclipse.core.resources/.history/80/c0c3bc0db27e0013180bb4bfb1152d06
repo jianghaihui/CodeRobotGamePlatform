@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--定义project文件的文件名与默认执行目标 -->
+<project default="deploy" name="Player-Project">
+	<!--添加描述 -->
+	<description>Player-Project</description>
+	<!--添加属性,相当于文件级的全局变量,此处用于设置目录名称 -->
+	<property name="deploy-libs-dir" location="libs" />
+
+	<property name="base-client-java" location="../CRGP-Base-Client-Java/dist/crgp.base.client.java.jar" />
+	<property name="base-game" location="../CRGP-Base-Game/dist/crgp.base.game.jar" />
+	<property name="base-robot-java" location="../CRGP-Base-Robot-Java/dist/crgp.base.robot.java.jar" />
+	<property name="platform" location="../CRGP-Platform/dist/crgp.platform.jar" />
+	<property name="server" location="../CRGP-Server/dist/crgp.server.jar" />
+	<property name="game" location="../CRGP-Mine-Game/dist/crgp.xjiang.mine.game.jar" />
+	<property name="robot" location="../CRGP-Mine-Robot/dist/crgp.xjiang.mine.robot.jar" />
+
+	<property name="base-client-java-ant" location="../CRGP-Base-Client-Java/build.xml" />
+	<property name="base-game-ant" location="../CRGP-Base-Game/build.xml" />
+	<property name="base-robot-java-ant" location="../CRGP-Base-Robot-Java/build.xml" />
+	<property name="server-ant" location="../CRGP-Server/build.xml" />
+	<property name="platform-ant" location="../CRGP-Platform/build.xml" />
+	<property name="game-ant" location="../CRGP-Mine-Game/build.xml" />
+	<property name="robot-ant" location="../CRGP-Mine-Robot/build.xml" />
+
+	<target name="init" depends="clean">
+		<tstamp />
+		<mkdir dir="${libs-dir}" />
+	</target>
+
+	<target name="build" depends="init">
+		<ant antfile="${base-client-java-ant}" dir="../CRGP-Base-Client-Java/" target="dist" />
+		<ant antfile="${base-game-ant}" dir="../CRGP-Base-Game/" target="dist" />
+		<ant antfile="${base-robot-java-ant}" dir="../CRGP-Base-Robot-Java/" target="dist" />
+		<ant antfile="${platform-ant}" dir="../CRGP-Platform/" target="dist" />
+		<ant antfile="${server-ant}" dir="../CRGP-Server/" target="dist" />
+		<ant antfile="${game-ant}" dir="../CRGP-Mine-Game/" target="dist" />
+		<ant antfile="${robot-ant}" dir="../CRGP-Mine-Robot/" target="dist" />
+	</target>
+
+	<target name="deploy" depends="build">
+		<copy todir="${deploy-libs-dir}" file="${base-client-java}" />
+		<copy todir="${deploy-libs-dir}" file="${base-game}" />
+		<copy todir="${deploy-libs-dir}" file="${base-robot-java}" />
+		<copy todir="${deploy-libs-dir}" file="${platform}" />
+		<copy todir="${deploy-libs-dir}" file="${server}" />
+		<copy todir="${deploy-libs-dir}" file="${game}" />
+		<copy todir="${deploy-libs-dir}" file="${robot}" />
+	</target>
+
+	<target name="clean">
+		<delete dir="${libs-dir}" />
+	</target>
+
+</project>

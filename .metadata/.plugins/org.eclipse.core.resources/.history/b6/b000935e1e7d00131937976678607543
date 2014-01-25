@@ -1,0 +1,233 @@
+package com.xjiang.mine.game;
+
+import java.util.Map;
+
+import javax.swing.JPanel;
+
+import com.crgp.game.BaseGame;
+import com.xjiang.mine.game.action.ClickAction;
+import com.xjiang.mine.game.action.HeightAction;
+import com.xjiang.mine.game.action.MapAction;
+import com.xjiang.mine.game.action.MineCountAction;
+import com.xjiang.mine.game.action.WidthAction;
+import com.xjiang.mine.game.ui.MineView;
+
+@SuppressWarnings("deprecation")
+public class MineGame extends BaseGame {
+	private MineView view;
+
+	private Thread mainThread;
+
+	/**
+	 * 标记机器人是否可点击雷区(及调用click方法).<BR>
+	 * 赢或者输之后,isClickable为false;<BR>
+	 * 每次play方法被调用的时候,isClickable被设置为true<BR>
+	 * 每次调用click方法后,isClickable被设置为false;<BR>
+	 * 执行play代码后,如果玩家的代码执行超时,isClickable被设置为false;<BR>
+	 */
+	private boolean isPlayable = false;
+	/**
+	 * 标记游戏是否结束，赢或者输游戏都将结束
+	 */
+	private boolean isEnd = false;
+
+	private String robot;
+
+	private long monitorTimer = -1;// 监控线程计时器
+	private Thread monitorThread;// 监控线程
+	private long unit = 10;// 监控线程递减单位
+
+	private long runSpace;// 运行间隔时间
+	private long runStep;// 运行次数
+
+	public MineGame() {
+		client.registAction("getWidth", new WidthAction(this));
+		client.registAction("getHeight", new HeightAction(this));
+		client.registAction("getMineCount", new MineCountAction(this));
+		client.registAction("getMap", new MapAction(this));
+
+		// 监控线程,等待一个单步时间,如果机器人没有在单步时间内结束,则强制结束机器人线程
+		monitorThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				if (monitorTimer == -1) {
+					try {
+						wait();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+				if (monitorTimer - unit <= 0) {
+					monitorTimer = 0;
+					isPlayable = false;
+				}
+				monitorTimer -= unit;
+				try {
+					Thread.sleep(unit);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		monitorThread.start();
+	}
+
+	@Override
+	public String getName() {
+		return "扫雷";
+	}
+
+	@Override
+	public String UID() {
+		return "CRGP-Mine-Game";
+	}
+
+	@Override
+	public final int playerCount() {
+		return 1;
+	}
+
+	@Override
+	public final JPanel createView() {
+		view = new MineView();
+		view.init();
+		return view;
+	}
+
+	@Override
+	public final void launch(Map<String, String> params) {
+		robot = robots[0];
+
+		isEnd = false;
+		view.init();
+		view.repaint();
+
+		if (robot == null) {
+			view.initEvent();
+		}
+	}
+
+	@Override
+	public final void run() {
+		if (robot != null) {
+			mainThread = new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					while (runStep > 0) {
+						if (view.isSucceed() || view.isFail()) {
+							isEnd = true;
+							isPlayable = false;
+							break;
+						}
+
+						isPlayable = true;
+						play(robot, 0);
+
+						// 等待上一次机器人代码执行结束
+						while (isPlayable) {
+							try {
+								Thread.sleep(1);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+						}
+						// 等待一个命令间隔
+						try {
+							Thread.sleep(runSpace);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						runStep--;
+					}
+				}
+			});
+
+			mainThread.start();
+		}
+	}
+
+	@Override
+	public final void runOne() {
+		if (robot != null) {
+			if (view.isSucceed() || view.isFail()) {
+				isEnd = true;
+				isPlayable = false;
+				return;
+			}
+			isPlayable = true;
+			play(robot, 0);
+		}
+	}
+
+	@Override
+	public void playEnd(Map<String, String> playResult) {
+		// 验证执行结果
+		String xTmp = playResult.get("x");
+		String yTmp = playResult.get("y");
+		if (xTmp != null && yTmp != null) {
+			int x;
+			int y;
+			try {
+				x = Integer.parseInt(xTmp);
+				y = Integer.parseInt(yTmp);
+
+				view.click(x, y);
+				view.repaint();
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+				System.err.println("MineGame.playEnd : " + "执行结果解析错误: " + xTmp
+						+ " " + yTmp);
+			}
+		}
+
+		isPlayable = false;
+	}
+
+	@Override
+	public final boolean isEnd() {
+		return isEnd;
+	}
+
+	// -------------------------
+	// ---
+	// ---信号与槽(Signal and Slots)
+	// ---
+	// -------------------------
+
+	/**
+	 * [SLOT]获取宽度
+	 * 
+	 * @return
+	 */
+	public final int getWidth() {
+		return view.getX_size();
+	}
+
+	/**
+	 * [SLOT]获取高度
+	 * 
+	 * @return
+	 */
+	public final int getHeight() {
+		return view.getY_size();
+	}
+
+	/**
+	 * [SLOT]获取地雷数量
+	 * 
+	 * @return
+	 */
+	public final int getMineCount() {
+		return view.getMine_size();
+	}
+
+	/**
+	 * [SLOT]获取所有位置的信息，以二维数组的形式返回
+	 * 
+	 * @return -1:未知,0-N:该位置的值
+	 */
+	public final int[][] getMap() {
+		return view.getMap();
+	}
+}

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--定义project文件的文件名与默认执行目标 -->
+<project default="dist" name="Player-Project">
+	<!--添加描述 -->
+	<description>Player-Project</description>
+	<!--添加属性,相当于文件级的全局变量,此处用于设置目录名称 -->
+	<property name="src-dir" location="src" />
+	<property name="build-dir" location="build" />
+	<property name="dist-dir" location="dist" />
+
+	<target name="init">
+	</target>
+
+	<target name="compile" depends="clean,init">
+		<javac srcdir="${src-dir}" destdir="${build-dir}" classpath="libs/crgp.base.client.java.jar"/>
+	</target>
+
+	<target name="dist" depends="compile">
+		<jar destfile="${dist-dir}/crgp.server.jar" basedir="${build-dir}" />
+	</target>
+
+	<target name="clean">
+	</target>
+
+</project>

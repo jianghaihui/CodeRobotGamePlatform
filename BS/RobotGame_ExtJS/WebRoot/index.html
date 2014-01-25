@@ -1,0 +1,147 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>CodeWarfare</title>
+    <link rel="stylesheet" type="text/css" href="lib/ext3.2/resources/css/ext-all.css"/>
+    <!--<link rel="stylesheet" type="text/css" href="lib/extjs4.2/resources/css/ext-all-debug.css"/>-->
+    <link rel="stylesheet" type="text/css" href="css/desktop.css"/>
+    <!--<link rel="stylesheet" type="text/css" href="css/game/mini/mini.css" />-->
+
+    <!-- GC -->
+    <!-- LIBS -->
+    <script type="text/javascript" src="lib/ext3.2/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="lib/ext3.2/ext-all.js"></script>
+    <!--<script type="text/javascript" src="lib/extjs4.2/ext-debug.js"></script>-->
+    <!--<script type="text/javascript" src="lib/extjs4.2/ext-all-debug.js"></script>-->
+    <script type="text/javascript" src="lib/jquery/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="lib/jquery/jquery-ui-1.10.2.custom.js"></script>
+    <!-- ENDLIBS -->
+
+    <script type="text/javascript">
+        Ext.namespace("Ext.ux");
+        Ext.namespace("DCC.util");
+        Ext.namespace("DCC.editor");
+        Ext.namespace("DCC.robot");
+        Ext.namespace("DCC.game");
+        Ext.namespace("DCC.widget");
+        Ext.namespace("DCC.data");
+    </script>
+
+    <!--MYWIDGET-->
+    <script type="text/javascript" src="js/widget/TopMessageBoxWidget.js"></script>
+    <script type="text/javascript" src="js/widget/ButtonCanChangeIcon.js"></script>
+    <script type="text/javascript" src="js/widget/TabCloseMenu.js"></script>
+    <!--ENDMYWIDGET-->
+
+    <!-- TOOLS -->
+    <script type="text/javascript" src="js/util/Ajax.js"></script>
+    <script type="text/javascript" src="js/util/CSSLoader.js"></script>
+    <script type="text/javascript" src="js/util/JSLoader.js"></script>
+    <script type="text/javascript" src="js/util/ModuleLoader.js"></script>
+    <!--ENDTOOLS-->
+
+    <!-- DESKTOP -->
+    <script type="text/javascript" src="js/OS.js"></script>
+    <script type="text/javascript" src="js/Desktop.js"></script>
+    <script type="text/javascript" src="js/StartMenu.js"></script>
+    <script type="text/javascript" src="js/TaskBar.js"></script>
+    <!-- ENDDESKTOP -->
+
+    <!-- Module -->
+
+    <!--SUPER MODULE-->
+    <script type="text/javascript" src="js/game/GameModule.js"></script>
+    <script type="text/javascript" src="js/robot/RobotModule.js"></script>
+    <!--END SUPER MODULE-->
+
+    <!--MAIN MODULE-->
+    <script type="text/javascript" src="js/Main.js"></script>
+    <!--END MAIN MODULE-->
+
+    <!--JSIDE-->
+    <!--<script src="lib/extjs3-ace/Component.js"></script>-->
+    <!--<script src="lib/ace/js/ace.js" type="text/javascript" charset="utf-8"></script>-->
+    <script src="lib/aceeditor/ace-0.2.0/src/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="lib/aceeditor/Panel.js" type="text/javascript" charset="utf-8"></script>
+    <!--<script src="lib/ace/js/ace.js"></script>-->
+    <!--<script src="lib/filetree/filetree.js"></script>-->
+
+    <!--<script src="lib/ace/js/mode/c_cpp.js"></script>-->
+    <!--<script src="lib/ace/js/mode/css.js"></script>-->
+    <!--<script src="lib/ace/js/mode/html.js"></script>-->
+    <!--<script src="lib/ace/js/mode/java.js"></script>-->
+    <!--<script src="lib/ace/js/mode/javascript.js"></script>-->
+    <!--<script src="lib/ace/js/mode/json.js"></script>-->
+    <!--<script src="lib/ace/js/mode/latex.js"></script>-->
+    <!--<script src="lib/ace/js/mode/makefile.js"></script>-->
+    <!--<script src="lib/ace/js/mode/perl.js"></script>-->
+    <!--<script src="lib/ace/js/mode/php.js"></script>-->
+    <!--<script src="lib/ace/js/mode/python.js"></script>-->
+    <!--<script src="lib/ace/js/mode/r.js"></script>-->
+    <!--<script src="lib/ace/js/mode/ruby.js"></script>-->
+    <!--<script src="lib/ace/js/mode/sql.js"></script>-->
+
+    <!--<script src="lib/ace/js/theme/ambiance.js"></script>-->
+    <!--<script src="lib/ace/js/theme/chrome.js"></script>-->
+    <!--<script src="lib/ace/js/theme/clouds.js"></script>-->
+    <!--<script src="lib/ace/js/theme/cobalt.js"></script>-->
+    <!--<script src="lib/ace/js/theme/dreamweaver.js"></script>-->
+    <!--<script src="lib/ace/js/theme/eclipse.js"></script>-->
+    <!--<script src="lib/ace/js/theme/github.js"></script>-->
+    <!--<script src="lib/ace/js/theme/monokai.js"></script>-->
+    <!--<script src="lib/ace/js/theme/solarized_dark.js"></script>-->
+    <!--<script src="lib/ace/js/theme/solarized_light.js"></script>-->
+    <!--<script src="lib/ace/js/theme/textmate.js"></script>-->
+    <!--<script src="lib/ace/js/theme/tomorrow.js"></script>-->
+    <!--<script src="lib/ace/js/theme/tomorrow_night.js"></script>-->
+    <!--<script src="lib/ace/js/theme/twilight.js"></script>-->
+    <!--<script src="lib/ace/js/theme/xcode.js"></script>-->
+
+    <!--<script src="lib/jside/jside.js"></script>-->
+    <!--ENDJSIDE-->
+
+    <!--JSEDITOR-->
+    <script type="text/javascript" src="js/editor/Editor.js"></script>
+    <script type="text/javascript" src="js/editor/EditorModule.js"></script>
+    <script type="text/javascript" src="js/editor/JSEditor.js"></script>
+    <script type="text/javascript" src="js/editor/RobotEditor.js"></script>
+    <!--ENDJSEDITOR-->
+
+    <!--ROBOT MODULE-->
+    <script type="text/javascript" src="js/robot/david/robot_david.js"></script>
+    <!--END ROBOT MODULE-->
+
+    <!--UserJSCode MODULE-->
+    <script type="text/javascript" id="UserJSCode"></script>
+    <!--END UserJSCode MODULE-->
+
+    <!--Module End-->
+</head>
+
+<body scroll="no">
+
+<div id="x-desktop">
+    <dl id="x-shortcuts" class="deskIcon">
+    </dl>
+</div>
+
+<div id="ux-taskbar">
+    <div id="ux-taskbar-start"></div>
+    <div id="ux-taskbar-panel-wrap">
+        <div id="ux-quickstart-l-panel"></div>
+        <div id="ux-taskbuttons-panel"></div>
+        <div id="ux-quickstart-r-panel"></div>
+    </div>
+    <div class="x-clear"></div>
+</div>
+
+<pre id="pre_1" class="x-hide">function foo(items) {
+    var i;
+    for (i = 0; i < items.length; i++) {
+        alert("Ace Rocks " + items[i]);
+    }
+}</pre>
+
+</body>
+
+</html>

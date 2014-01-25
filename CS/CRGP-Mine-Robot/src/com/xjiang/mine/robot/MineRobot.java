@@ -22,8 +22,10 @@ public abstract class MineRobot extends BaseRobot {
 
 	/**
 	 * 每次需要机器人点击一个雷点的时候会调用该方法;<BR>
-	 * 该方法只允许调用一次click；<BR>
-	 * 调用click后执行器会收回机器人的代码执行权限，即click方法后面的代码不会被执行, 等待下一次调用play<BR>
+	 * 该方法需要返回一个点击位置<BR>
+	 * 返回的方式为:<BR>
+	 * Map.put("x",x)
+	 * Map.put("y",y)
 	 */
 	public abstract Map<String, String> play();
 
@@ -87,27 +89,6 @@ public abstract class MineRobot extends BaseRobot {
 
 		// 解析结果数据
 		return Integer.parseInt(dataMessage.getData("mineCount"));
-	}
-
-	/**
-	 * [SIGNAL]点击一个雷点
-	 * 
-	 * @param x
-	 *            横向位置
-	 * @param y
-	 *            纵向位置
-	 */
-	public final void click(int x, int y) {
-		// 构建求情消息
-		ActionMessage actionMessage = new ActionMessage(Message.TYPE_ROBOT,
-				RobotUID(), Message.TYPE_GAME, GAME_UID);
-		actionMessage.setActionName("click");
-		actionMessage.setHasReceipt(false);
-		actionMessage.addParam("x", x + "");
-		actionMessage.addParam("y", y + "");
-
-		// 发送消息
-		client.send(actionMessage);
 	}
 
 	/**

@@ -1,0 +1,353 @@
+package com.xjiang.fivechess.game.ui;
+
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+
+import javax.swing.JPanel;
+
+public class FiveChessView extends JPanel {
+
+	private static final long serialVersionUID = -2098200171504810883L;
+
+	public static final int BLACK_TYPE = 1;
+	public static final int WHITE_TYPE = 2;
+
+	private int blank_size = 35;
+
+	private int map_size = 20;
+	private int[][] map = new int[map_size][map_size];
+	private Point mouseOver;
+	private Point lastClick;
+
+	private int currType = BLACK_TYPE;
+
+	private boolean isWin = false;
+	private ArrayList<Point> winList = new ArrayList<Point>();
+
+	private MyMouseEvent mouseEvent = new MyMouseEvent();
+
+	private boolean isAddEvent = false;
+
+	public FiveChessView() {
+		init();
+	}
+
+	public void addEvent() {
+		if (!isAddEvent) {
+			addMouseListener(mouseEvent);
+			addMouseMotionListener(mouseEvent);
+			addMouseWheelListener(mouseEvent);
+			isAddEvent = true;
+		}
+	}
+
+	public void removeEvent() {
+		if (isAddEvent) {
+			removeMouseListener(mouseEvent);
+			removeMouseMotionListener(mouseEvent);
+			removeMouseWheelListener(mouseEvent);
+			isAddEvent = false;
+		}
+	}
+
+	public void init() {
+		initUI();
+		initData();
+		repaint();
+	}
+
+	private void initData() {
+		mouseOver = null;
+		lastClick = null;
+		isWin = false;
+		currType = BLACK_TYPE;
+		winList.clear();
+		for (int i = 0; i < map_size; i++) {
+			for (int j = 0; j < map_size; j++) {
+				map[i][j] = 0;
+			}
+		}
+	}
+
+	private void initUI() {
+		setLayout(null);
+		setSize(map_size * blank_size + 2, map_size * blank_size + 2);
+	}
+
+	@Override
+	public void paint(Graphics g) {
+		super.paint(g);
+		Graphics2D g2 = (Graphics2D) g;
+
+		// »­±³¾°
+		g2.setColor(Color.green);
+		g2.fillRect(1, 1, map_size * blank_size, map_size * blank_size);
+		g2.setColor(Color.black);
+		g2.drawRect(0, 0, map_size * blank_size + 1, map_size * blank_size + 1);
+
+		// »­ÆåÅÌ
+		for (int i = 0; i < map_size; i++) {
+			for (int j = 0; j < map_size; j++) {
+				g2.drawLine(j * blank_size, i * blank_size + blank_size / 2, j * blank_size + blank_size, i
+						* blank_size + blank_size / 2);
+				g2.drawLine(j * blank_size + blank_size / 2, i * blank_size, j * blank_size + blank_size / 2, i
+						* blank_size + blank_size);
+			}
+		}
+
+		int offset = 2;
+
+		// »­Æå×Ó
+		for (int i = 0; i < map_size; i++) {
+			for (int j = 0; j < map_size; j++) {
+				if (map[i][j] == 1) {
+					g2.setColor(Color.black);
+					g2.fillOval(j * blank_size + offset, i * blank_size + offset, blank_size - offset * 2, blank_size
+							- offset * 2);
+				} else if (map[i][j] == 2) {
+					g2.setColor(Color.white);
+					g2.fillOval(j * blank_size + offset, i * blank_size + offset, blank_size - offset * 2, blank_size
+							- offset * 2);
+				}
+			}
+		}
+
+		if (mouseOver != null) {
+			Color c = null;
+			if (currType == BLACK_TYPE) {
+				c = new Color(Color.BLACK.getRed(), Color.BLACK.getGreen(), Color.BLACK.getBlue(), 200);
+			} else {
+				c = new Color(Color.WHITE.getRed(), Color.WHITE.getGreen(), Color.WHITE.getBlue(), 200);
+			}
+			g2.setColor(c);
+			g2.fillOval(mouseOver.x * blank_size, mouseOver.y * blank_size, blank_size, blank_size);
+		}
+
+		if (lastClick != null) {
+			g2.setColor(Color.red);
+			g2.setStroke(new BasicStroke(offset));
+			g2.drawOval(lastClick.x * blank_size + offset, lastClick.y * blank_size + offset, blank_size - offset * 2,
+					blank_size - offset * 2);
+		}
+
+		if (isWin) {
+			g2.setColor(Color.red);
+			g2.setStroke(new BasicStroke(offset));
+			for (Point p : winList) {
+				g2.drawOval(p.x * blank_size + offset, p.y * blank_size + offset, blank_size - offset * 2, blank_size
+						- offset * 2);
+			}
+		}
+	}
+
+	public boolean click(int x, int y) {
+		if (map[y][x] == 0) {
+			map[y][x] = currType;
+			if (!isWin()) {
+				currType = currType % 2 + 1;
+				lastClick = new Point(x, y);
+			} else {
+				win();
+			}
+			repaint();
+			return true;
+		}
+		return false;
+	}
+
+	public boolean isWin() {
+		if (!isWin) {
+			for (int i = 0; i < map_size; i++) {
+				for (int j = 0; j < map_size; j++) {
+					if (map[i][j] != 0) {
+						ArrayList<Point> hlist = new ArrayList<Point>();
+						ArrayList<Point> vlist = new ArrayList<Point>();
+						ArrayList<Point> llist = new ArrayList<Point>();
+						ArrayList<Point> rlist = new ArrayList<Point>();
+
+						loopSearch(j, i, map[i][j], hlist, vlist, llist, rlist);
+						if (hlist.size() >= 5) {
+							isWin = true;
+							winList.addAll(hlist);
+							return true;
+						}
+						if (vlist.size() >= 5) {
+							isWin = true;
+							winList.addAll(vlist);
+							return true;
+						}
+						if (llist.size() >= 5) {
+							isWin = true;
+							winList.addAll(llist);
+							return true;
+						}
+						if (rlist.size() >= 5) {
+							isWin = true;
+							winList.addAll(rlist);
+							return true;
+						}
+					}
+				}
+			}
+		}
+		return isWin;
+	}
+
+	public void win() {
+		lastClick = null;
+		removeEvent();
+
+		System.out.println((currType == BLACK_TYPE ? "blank" : "white") + " win");
+	}
+
+	private void loopSearch(int x, int y, int type, ArrayList<Point> hlist, ArrayList<Point> vlist,
+			ArrayList<Point> llist, ArrayList<Point> rlist) {
+		Point p = new Point(x, y);
+
+		hlist.add(p);
+		vlist.add(p);
+		llist.add(p);
+		rlist.add(p);
+
+		// hlist++
+		int h_x = x;
+		int h_y = y;
+		while (true) {
+			h_x += 1;
+			if (h_x < map_size && map[h_y][h_x] == type) {
+				hlist.add(new Point(h_x, h_y));
+			} else {
+				break;
+			}
+		}
+		// hlist--
+		h_x = x;
+		h_y = y;
+		while (true) {
+			h_x -= 1;
+			if (h_x >= 0 && map[h_y][h_x] == type) {
+				hlist.add(new Point(h_x, h_y));
+			} else {
+				break;
+			}
+		}
+		// vlist++
+		int v_x = x;
+		int v_y = y;
+		while (true) {
+			v_y += 1;
+			if (v_y < map_size && map[v_y][v_x] == type) {
+				vlist.add(new Point(v_x, v_y));
+			} else {
+				break;
+			}
+		}
+		// vlist--
+		v_x = x;
+		v_y = y;
+		while (true) {
+			v_y -= 1;
+			if (v_y >= 0 && map[v_y][v_x] == type) {
+				vlist.add(new Point(v_x, v_y));
+			} else {
+				break;
+			}
+		}
+		// llist++
+		int l_x = x;
+		int l_y = y;
+		while (true) {
+			l_x += 1;
+			l_y += 1;
+			if (l_x < map_size && l_y < map_size && map[l_y][l_x] == type) {
+				llist.add(new Point(l_x, l_y));
+			} else {
+				break;
+			}
+		}
+		// llist--
+		l_x = x;
+		l_y = y;
+		while (true) {
+			l_x -= 1;
+			l_y -= 1;
+			if (l_x >= 0 && l_y >= 0 && map[l_y][l_x] == type) {
+				llist.add(new Point(l_x, l_y));
+			} else {
+				break;
+			}
+		}
+		// rlist++
+		int r_x = x;
+		int r_y = y;
+		while (true) {
+			r_x -= 1;
+			r_y += 1;
+			if (r_x >= 0 && r_y < map_size && map[r_y][r_x] == type) {
+				rlist.add(new Point(r_x, r_y));
+			} else {
+				break;
+			}
+		}
+		// rlist--
+		r_x = x;
+		r_y = y;
+		while (true) {
+			r_x += 1;
+			r_y -= 1;
+			if (r_x < map_size && r_y >= 0 && map[r_y][r_x] == type) {
+				rlist.add(new Point(r_x, r_y));
+			} else {
+				break;
+			}
+		}
+	}
+
+	public int[][] getMap() {
+		return map.clone();
+	}
+
+	public Point getLastClick() {
+		return new Point(lastClick);
+	}
+
+	public int getCurrType() {
+		return currType;
+	}
+
+	class MyMouseEvent extends MouseAdapter {
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			int x = e.getX() / blank_size;
+			int y = e.getY() / blank_size;
+
+			click(x, y);
+		}
+
+		@Override
+		public void mouseMoved(MouseEvent e) {
+			int x = e.getX() / blank_size;
+			int y = e.getY() / blank_size;
+			if (mouseOver != null) {
+				mouseOver.setLocation(x, y);
+				repaint();
+			}
+		}
+
+		@Override
+		public void mouseEntered(MouseEvent e) {
+			mouseOver = new Point();
+		}
+
+		@Override
+		public void mouseExited(MouseEvent e) {
+			mouseOver = null;
+		}
+	}
+}

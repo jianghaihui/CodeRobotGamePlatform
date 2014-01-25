@@ -1,0 +1,377 @@
+package com.crgp.platform.gui;
+
+import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+
+import com.crgp.game.BaseGame;
+import com.crgp.platform.gui.panel.ConsolePanel;
+import com.crgp.platform.xml.XMLReader;
+import com.crgp.platform.xml.bean.GameBean;
+import com.crgp.platform.xml.bean.RobotBean;
+
+/**
+ * 主窗体
+ * 
+ * @author XJiang
+ * 
+ */
+@SuppressWarnings( { "unchecked" })
+public class MainWindow extends JFrame {
+	private static final long serialVersionUID = -2268430829092944845L;
+
+	private final int TOOL_HEIGHT = 50;
+	private final int ROBOT_LIST_WIDTH = 180;
+	private final int ROBOT_LIST_TOOL_HEIGHT = 50;
+	private final int CONSOLE_HIEGHT = 200;
+
+	private BaseGame game;
+	private JPanel toolPanel;
+	private JPanel gameView;
+	private JList allRobotList;
+	private JList selectRobotList;
+	private ConsolePanel consolePanel;
+
+	private JPanel selectRobotListTool;
+
+	private JButton upButton;
+	private JButton downButton;
+	private JButton addPlayerButton;
+
+	private JButton launchButton;
+	private JButton runButton;
+	private JButton runOneButton;
+
+	private GameBean gameLauncher;
+
+	public MainWindow(GameBean gameLauncher) throws Exception {
+		this.gameLauncher = gameLauncher;
+
+		Class<BaseGame> c = (Class<BaseGame>) Class.forName(gameLauncher
+				.getLaunchClass());
+		game = c.newInstance();
+
+		initUI();
+		setResizable(false);
+
+		getGameView().addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+				toolPanel = null;
+				allRobotList = null;
+				selectRobotList = null;
+				selectRobotListTool = null;
+				consolePanel = null;
+				initUI();
+			}
+		});
+	}
+
+	private void initUI() {
+		setLayout(null);
+		setSize(getWidth(), getHeight());
+		setLocationRelativeTo(null);
+
+		add(getToolPanel());
+		add(getGameView());
+		add(getAllRobotList());
+		add(getSelectRobotList());
+		add(getSelectRobotListTool());
+		add(getConsolePanel());
+
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+
+	public JPanel getGameView() {
+		if (gameView == null) {
+			gameView = game.createView();
+
+			gameView.setLocation(0, TOOL_HEIGHT);
+		}
+		return gameView;
+	}
+
+	public JPanel getToolPanel() {
+		if (toolPanel == null) {
+			toolPanel = new JPanel();
+			toolPanel.setBorder(new LineBorder(Color.gray));
+			toolPanel.setBounds(0, 0, getWidth(), TOOL_HEIGHT);
+			toolPanel.add(getLaunchButton());
+			toolPanel.add(getRunButton());
+			toolPanel.add(getRunOneButton());
+		}
+		return toolPanel;
+	}
+
+	public JList getAllRobotList() {
+		if (allRobotList == null) {
+			try {
+				DefaultListModel model = new DefaultListModel();
+
+				RobotBean[] robots = XMLReader.readRobotList();
+				for (RobotBean robot : robots) {
+					model.addElement(robot);
+				}
+
+				allRobotList = new JList(model);
+				allRobotList.setBorder(new LineBorder(Color.gray));
+				allRobotList.setBounds(getGameView().getWidth(), TOOL_HEIGHT,
+						ROBOT_LIST_WIDTH, getGameView().getHeight() / 2);
+
+				allRobotList.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent event) {
+						if (event.getClickCount() == 2
+								&& event.getButton() == MouseEvent.BUTTON1) {
+							Object selectItem = allRobotList.getSelectedValue();
+							if (selectItem != null) {
+								if (getSelectRobotList().getModel().getSize() < game
+										.playerCount()) {
+									((DefaultListModel) getSelectRobotList()
+											.getModel()).addElement(selectItem);
+								}
+							}
+						}
+					}
+				});
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return allRobotList;
+	}
+
+	public JList getSelectRobotList() {
+		if (selectRobotList == null) {
+			selectRobotList = new JList(new DefaultListModel());
+			selectRobotList.setBorder(new LineBorder(Color.gray));
+			selectRobotList.setBounds(getGameView().getWidth(), TOOL_HEIGHT
+					+ getGameView().getHeight() / 2, ROBOT_LIST_WIDTH,
+					getGameView().getHeight() / 2 - ROBOT_LIST_TOOL_HEIGHT);
+
+			selectRobotList.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent event) {
+					if (event.getClickCount() == 2
+							&& event.getButton() == MouseEvent.BUTTON1) {
+						Object selectItem = selectRobotList.getSelectedValue();
+						if (selectItem != null) {
+							if (selectItem instanceof RobotBean) {
+								((DefaultListModel) getSelectRobotList()
+										.getModel()).removeElement(selectItem);
+							} else {
+								((DefaultListModel) getSelectRobotList()
+										.getModel()).removeElement(selectItem);
+							}
+						}
+					}
+				}
+			});
+
+			selectRobotList.getModel().addListDataListener(
+					new ListDataListener() {
+
+						@Override
+						public void intervalRemoved(ListDataEvent arg0) {
+							if (getSelectRobotList().getModel().getSize() < game
+									.playerCount()) {
+								getLaunchButton().setEnabled(false);
+							}
+						}
+
+						@Override
+						public void intervalAdded(ListDataEvent arg0) {
+							if (getSelectRobotList().getModel().getSize() == game
+									.playerCount()) {
+								getLaunchButton().setEnabled(true);
+							}
+						}
+
+						@Override
+						public void contentsChanged(ListDataEvent arg0) {
+
+						}
+					});
+		}
+		return selectRobotList;
+	}
+
+	public ConsolePanel getConsolePanel() {
+		if (consolePanel == null) {
+			consolePanel = new ConsolePanel();
+			consolePanel.setBounds(0, TOOL_HEIGHT + getGameView().getHeight(),
+					getWidth(), CONSOLE_HIEGHT);
+		}
+		return consolePanel;
+	}
+
+	public JPanel getSelectRobotListTool() {
+		if (selectRobotListTool == null) {
+			selectRobotListTool = new JPanel();
+			selectRobotListTool.setLayout(new FlowLayout(FlowLayout.CENTER));
+			selectRobotListTool.setBounds(getGameView().getWidth(), TOOL_HEIGHT
+					+ getGameView().getHeight() - ROBOT_LIST_TOOL_HEIGHT,
+					ROBOT_LIST_WIDTH, ROBOT_LIST_TOOL_HEIGHT);
+
+			selectRobotListTool.add(getUpButton());
+			selectRobotListTool.add(getDownButton());
+			selectRobotListTool.add(getAddPlayerButton());
+		}
+		return selectRobotListTool;
+	}
+
+	public JButton getUpButton() {
+		if (upButton == null) {
+			upButton = new JButton("∧");
+		}
+
+		return upButton;
+	}
+
+	public JButton getDownButton() {
+		if (downButton == null) {
+			downButton = new JButton("∨");
+		}
+		return downButton;
+	}
+
+	public JButton getAddPlayerButton() {
+		if (addPlayerButton == null) {
+			addPlayerButton = new JButton("+");
+
+			addPlayerButton.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					if (getSelectRobotList().getModel().getSize() < game
+							.playerCount()) {
+						((DefaultListModel) getSelectRobotList().getModel())
+								.addElement("Player");
+					}
+				}
+			});
+		}
+		return addPlayerButton;
+	}
+
+	public JButton getLaunchButton() {
+		if (launchButton == null) {
+			launchButton = new JButton("启动");
+			launchButton.setEnabled(false);
+			launchButton.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					for (int i = 0; i < game.getRobots().length; i++) {
+						Object obj = getSelectRobotList().getModel()
+								.getElementAt(i);
+						if (obj instanceof RobotBean) {
+							try {
+								RobotBean bean = (RobotBean) obj;
+								game.getRobots()[i] = bean.getUID();
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}
+
+					game.launch(gameLauncher.getParams());
+					getRunButton().setEnabled(true);
+					getRunOneButton().setEnabled(true);
+				}
+			});
+		}
+		return launchButton;
+	}
+
+	private int runTime = 100;
+
+	public JButton getRunButton() {
+		if (runButton == null) {
+			runButton = new JButton("Run");
+			runButton.setEnabled(false);
+
+			runButton.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					getRunOneButton().setEnabled(false);
+					getRunButton().setEnabled(false);
+					getLaunchButton().setEnabled(false);
+
+					new Thread((new Runnable() {
+
+						@Override
+						public void run() {
+							for (int t = 0; t < runTime; t++) {
+								System.out.println("run");
+
+								game.launch(gameLauncher.getParams());
+								game.setRunSpace(1000);
+								game.run();
+
+								while (!game.isEnd()) {
+									try {
+										Thread.sleep(100);
+									} catch (InterruptedException e) {
+										e.printStackTrace();
+									}
+								}
+
+								try {
+									Thread.sleep(100);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+							}
+
+							getLaunchButton().setEnabled(true);
+						}
+					})).start();
+				}
+			});
+		}
+		return runButton;
+	}
+
+	public JButton getRunOneButton() {
+		if (runOneButton == null) {
+			runOneButton = new JButton("Run One");
+			runOneButton.setEnabled(false);
+
+			runOneButton.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					game.runOne();
+				}
+			});
+		}
+		return runOneButton;
+	}
+
+	@Override
+	public int getWidth() {
+		return getGameView().getWidth() + ROBOT_LIST_WIDTH;
+	}
+
+	@Override
+	public int getHeight() {
+		return TOOL_HEIGHT + getGameView().getHeight() + CONSOLE_HIEGHT;
+	}
+
+}

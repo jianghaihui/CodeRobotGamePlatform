@@ -1,0 +1,3 @@
+<RobotList>
+	<Robot UID="jhs_mine_robot_01" launcher="com.crgp.robot.RobotLauncher"/>
+</RobotList>

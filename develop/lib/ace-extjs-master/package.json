@@ -1,0 +1,33 @@
+{
+    "name": "ace-extjs",
+    "engine": [
+        "node"
+    ],
+    "main": "lib/project.js",
+    "scripts": {
+        "build": {
+            "location": "./",
+            "module": "/lib/build.js"
+        }
+    },
+    "mappings": {
+        "nodejs": {
+            "id": "nodejs.org/"
+        },
+        "pinf": {
+            "id": "pinf.org/loader/"
+        },
+        "jsgi": {
+            "id": "github.com/kriszyp/jsgi-node/"
+        },
+        "connect": {
+            "id": "github.com/senchalabs/connect/"
+        },
+        "extjs3": {
+            "id": "sencha.com/products/extjs3"
+        },
+        "extjs4": {
+            "id": "sencha.com/products/extjs4"
+        }
+    }
+}

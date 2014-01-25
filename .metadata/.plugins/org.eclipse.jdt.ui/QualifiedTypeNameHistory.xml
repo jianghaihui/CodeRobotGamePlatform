@@ -8,11 +8,17 @@
 <fullyQualifiedTypeName name="java.net.Socket"/>
 <fullyQualifiedTypeName name="com.crgp.client.Client"/>
 <fullyQualifiedTypeName name="java.lang.Exception"/>
-<fullyQualifiedTypeName name="com.crgp.game.BaseGame"/>
 <fullyQualifiedTypeName name="com.crgp.game.client.Action"/>
-<fullyQualifiedTypeName name="java.util.Map"/>
 <fullyQualifiedTypeName name="java.util.HashMap"/>
-<fullyQualifiedTypeName name="java.io.OutputStream"/>
-<fullyQualifiedTypeName name="java.io.InputStream"/>
+<fullyQualifiedTypeName name="com.crgp.server.util.IOUtil"/>
+<fullyQualifiedTypeName name="java.lang.Runtime"/>
+<fullyQualifiedTypeName name="java.lang.Thread"/>
 <fullyQualifiedTypeName name="java.lang.Runnable"/>
+<fullyQualifiedTypeName name="com.crgp.game.action.PlayEndAction"/>
+<fullyQualifiedTypeName name="java.util.Map"/>
+<fullyQualifiedTypeName name="java.io.InputStream"/>
+<fullyQualifiedTypeName name="java.io.OutputStream"/>
+<fullyQualifiedTypeName name="com.crgp.server.util.ByteUtils"/>
+<fullyQualifiedTypeName name="com.crgp.game.BaseGame"/>
+<fullyQualifiedTypeName name="com.crgp.fivechess.game.FiveChessGame"/>
 </qualifiedTypeNameHistroy>

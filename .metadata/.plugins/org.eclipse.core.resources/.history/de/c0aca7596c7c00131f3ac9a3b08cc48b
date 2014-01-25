@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--定义project文件的文件名与默认执行目标 -->
+<project default="dist" name="CRGP-Base-Robot-Java">
+	<!--添加属性,相当于文件级的全局变量,此处用于设置目录名称 -->
+	<property name="src-dir" location="src" />
+	<property name="build-dir" location="build" />
+	<property name="dist-dir" location="dist" />
+	<!--创建目标,操作为创建文件夹 -->
+	<target name="init">
+		<tstamp />
+		<mkdir dir="${build-dir}" />
+		<mkdir dir="${dist-dir}" />
+	</target>
+	<!--创建目标compile,操作为编译src目录下的.java文件并输出.class文件到build目录 -->
+	<target name="compile" depends="init">
+		<javac srcdir="${src-dir}" destdir="${build-dir}" classpath="libs/jaxen-1.1.1.jar;libs/dom4j-1.6.1.jar;libs/crgp.base.client.java.jar"/>
+	</target>
+	<!--创建目标dist,操作为打包.class文件并输出到dist目录,打包.java文件并输出到dist目录 -->
+	<target name="dist" depends="compile">
+		<jar destfile="${dist-dir}/crgp.base.robot.java.jar" basedir="${build-dir}" />
+	</target>
+	<!--创建目标clean,操作为清空build与dist目录 -->
+	<target name="clean">
+		<_delete dir="${binDir}" />
+		<_delete dir="${dist-dir}" />
+	</target>
+
+</project>

@@ -1,0 +1,100 @@
+package com.xjiang.mine.game;
+
+import java.util.Map;
+
+import javax.swing.JPanel;
+
+import com.crgp.game.BaseGame;
+import com.xjiang.mine.game.action.HeightAction;
+import com.xjiang.mine.game.action.MapAction;
+import com.xjiang.mine.game.action.MineCountAction;
+import com.xjiang.mine.game.action.WidthAction;
+import com.xjiang.mine.game.ui.MineView;
+
+public class MineGame extends BaseGame {
+	private MineView view;
+
+	public MineGame() {
+		client.registAction("getWidth", new WidthAction(this));
+		client.registAction("getHeight", new HeightAction(this));
+		client.registAction("getMineCount", new MineCountAction(this));
+		client.registAction("getMap", new MapAction(this));
+	}
+
+	@Override
+	public String getName() {
+		return "扫雷";
+	}
+
+	@Override
+	public String GameUID() {
+		return "CRGP-Mine-Game";
+	}
+
+	@Override
+	public final int playerCount() {
+		return 1;
+	}
+
+	@Override
+	public final JPanel getView() {
+		if (view == null) {
+			view = new MineView();
+			view.init();
+		}
+		return view;
+	}
+
+	@Override
+	public final void launch(Map<String, String> params) {
+		isEnd = false;
+		view.init();
+		view.repaint();
+
+		if (robots[0] == null) {
+			view.initEvent();
+		}
+	}
+
+	// -------------------------
+	// ---
+	// ---信号与槽(Signal and Slots)
+	// ---
+	// -------------------------
+
+	/**
+	 * [SLOT]获取宽度
+	 * 
+	 * @return
+	 */
+	public final int getWidth() {
+		return view.getX_size();
+	}
+
+	/**
+	 * [SLOT]获取高度
+	 * 
+	 * @return
+	 */
+	public final int getHeight() {
+		return view.getY_size();
+	}
+
+	/**
+	 * [SLOT]获取地雷数量
+	 * 
+	 * @return
+	 */
+	public final int getMineCount() {
+		return view.getMine_size();
+	}
+
+	/**
+	 * [SLOT]获取所有位置的信息，以二维数组的形式返回
+	 * 
+	 * @return -1:未知,0-N:该位置的值
+	 */
+	public final int[][] getMap() {
+		return view.getMap();
+	}
+}

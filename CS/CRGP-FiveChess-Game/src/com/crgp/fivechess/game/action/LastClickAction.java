@@ -1,0 +1,24 @@
+package com.crgp.fivechess.game.action;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import com.crgp.fivechess.game.FiveChessGame;
+import com.crgp.game.client.Action;
+import com.crgp.game.client.message.ActionMessage;
+
+public class LastClickAction extends Action {
+	private FiveChessGame game;
+
+	public LastClickAction(FiveChessGame game) {
+		this.game = game;
+	}
+
+	@Override
+	public Map<String, String> execute(ActionMessage message) throws Exception {
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("lastClick", game.getLastClick().x + "," + game.getLastClick().y);
+		return map;
+	}
+
+}

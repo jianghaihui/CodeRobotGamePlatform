@@ -1,0 +1,78 @@
+package com.crgp.fivechess.game;
+
+import java.awt.Point;
+import java.util.Map;
+
+import javax.swing.JPanel;
+
+import com.crgp.fivechess.game.ui.FiveChessView;
+import com.crgp.game.BaseGame;
+
+public class FiveChessGame extends BaseGame {
+	private FiveChessView view;
+
+	private boolean isEnd = false;
+
+	private int[] robot_type = new int[] { FiveChessView.BLACK_TYPE, FiveChessView.WHITE_TYPE };
+
+	private Thread mainThread;
+
+	@Override
+	public String GameUID() {
+		return "CRGP-FiveChess-Game";
+	}
+
+	@Override
+	public String getName() {
+		return "Îå×ÓÆå";
+	}
+
+	@Override
+	public JPanel createView() {
+		view = new FiveChessView();
+		return view;
+	}
+
+	@Override
+	public void playEnd(Map<String, String> playResult) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void playerBegin() {
+		
+	};
+
+	@Override
+	public boolean isEnd() {
+		return view.isWin();
+	}
+
+	@Override
+	public void launch(Map<String, String> params) {
+		view.init();
+		view.removeEvent();
+	}
+
+	@Override
+	public int playerCount() {
+		return 2;
+	}
+
+	public int[][] getMap() {
+		return view.getMap();
+	}
+
+	public Point getLastClick() {
+		return view.getLastClick();
+	}
+
+	public int getCurrType() {
+		return view.getCurrType();
+	}
+
+	public void click(int x, int y) {
+		boolean result = view.click(x, y);
+	}
+}

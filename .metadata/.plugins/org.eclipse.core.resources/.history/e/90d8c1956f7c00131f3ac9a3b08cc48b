@@ -1,0 +1,20 @@
+package com.crgp.server.util;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+public class IOUtil {
+	public static String read(InputStream is) throws IOException {
+		String message = "";
+		byte[] b = new byte[1024];
+		int length = is.read(b);
+		message = new String(b, 0, length);
+		
+		while (length == 1024) {
+			message = message + new String(b, 0, length);
+			length = is.read(b);
+		}
+
+		return message;
+	}
+}

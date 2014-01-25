@@ -13,26 +13,26 @@
 		<item value="false" key="isRegEx"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="classpath=&quot;libs/base-client.jar;libs/base-robot-java.jar&quot;" key="selection"/>
+		<item value="write" key="selection"/>
 		<list key="findhistory">
-			<item value="classpath=&quot;libs/base-client.jar;libs/base-robot-java.jar&quot;"/>
-			<item value="distDir"/>
-			<item value="src"/>
-			<item value="${binDir}/"/>
-			<item value="bin"/>
-			<item value="buildDir"/>
-			<item value="STOL"/>
-			<item value="STOLS"/>
+			<item value="write"/>
+			<item value="read"/>
+			<item value="deploy-libs-dir"/>
+			<item value="getOutputStream"/>
+			<item value="getInputStream"/>
+			<item value="SERVER"/>
+			<item value="[SERVER]"/>
+			<item value="message"/>
 		</list>
 		<list key="replacehistory">
+			<item value="libs"/>
+			<item value="CLIENT"/>
+			<item value="[SERVER]  :  "/>
 			<item value=""/>
 			<item value="dist-dir"/>
 			<item value="bin"/>
 			<item value="build"/>
 			<item value="binDir"/>
-			<item value="SLOT"/>
-			<item value="STOL"/>
-			<item value="view"/>
 		</list>
 	</section>
 </section>

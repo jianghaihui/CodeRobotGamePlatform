@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--定义project文件的文件名与默认执行目标 -->
+<project default="deploy" name="Player-Project">
+	<!--添加描述 -->
+	<description>Player-Project</description>
+	<!--添加属性,相当于文件级的全局变量,此处用于设置目录名称 -->
+	<property name="libs-dir" location="libs" />
+
+	<target name="deploy">
+		<copy todir="${basedir}/new" file="${basedir}/old/old1.txt1"> 
+	</target>
+
+</project>

@@ -1,0 +1,3 @@
+<RobotList>
+	<Robot UID="jhs_fivechess_robot_01" launcher="com.jhs.fivechess.robot.FiveChessRobot01"/>
+</RobotList>

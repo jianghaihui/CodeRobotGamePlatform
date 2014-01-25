@@ -1,0 +1,10 @@
+package com.crgp.robot;
+
+import com.crgp.robot.xml.XMLReader;
+
+public class RobotLauncher {
+	public static void main(String[] args) {
+		// 获得机器人对象
+		RobotBean[] gameLaunchBean = XMLReader.readRobotList();
+	}
+}

@@ -1,0 +1,29 @@
+package com.crgp.game.action;
+
+import java.util.Map;
+
+import com.crgp.game.BaseGame;
+import com.crgp.game.client.Action;
+import com.crgp.game.client.message.ActionMessage;
+
+public class PlayEndAction extends Action {
+	private BaseGame game;
+
+	public PlayEndAction(BaseGame game) {
+		this.game = game;
+	}
+
+	@Override
+	public Map<String, String> execute(ActionMessage message) throws Exception {
+		try {
+			int x;
+			int y;
+			x = Integer.parseInt(message.getParam("x"));
+			y = Integer.parseInt(message.getParam("y"));
+			game.playEnd(message.getParams());
+		} catch (NumberFormatException e) {
+			throw new Exception("参数错误");
+		}
+		return null;
+	}
+}

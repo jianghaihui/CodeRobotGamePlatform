@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workingSetManager>
 <workingSet editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1388762734530_1" label="CRGP-Platform-Developer" name="CRGP-Platform-Developer">
+<item elementID="=CRGP-Base-Client-Java" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
 <item elementID="=CRGP-Base-Robot-Java" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
 <item elementID="=CRGP-Base-Game" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
 <item elementID="=CRGP-Platform" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
@@ -11,10 +12,13 @@
 </workingSet>
 <workingSet editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1388762782226_3" label="CRGP-Game-Developer" name="CRGP-Game-Developer">
 <item elementID="=CRGP-Mine-Robot" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=CRGP-FiveChess-Robot" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
 <item elementID="=CRGP-Mine-Game" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=CRGP-FiveChess-Game" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
 </workingSet>
 <workingSet editPageId="org.eclipse.jdt.ui.JavaWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1388762813911_6" label="CRGP-Player" name="CRGP-Player">
 <item elementID="=My-Mine-Robot-01" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
+<item elementID="=My-FiveChess-Robot-01" factoryID="org.eclipse.jdt.ui.PersistableJavaElementFactory"/>
 </workingSet>
 <workingSet aggregate="true" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1388058107218_0" label="Window Working Set" name="Aggregate for window 1388058107217"/>
 <workingSet aggregate="true" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1388762817970_7" label="Multiple Working Sets" name="Aggregate:CRGP-Game-Developer:CRGP-Platform-Developer:CRGP-Player:CRGP-Plugs-Developer:">
@@ -27,8 +31,8 @@
 <workingSet IMemento.internal.id="CRGP-Game-Developer"/>
 <workingSet IMemento.internal.id="CRGP-Platform-Developer"/>
 </workingSet>
-<mruList name="CRGP-Platform-Developer"/>
-<mruList name="CRGP-Game-Developer"/>
 <mruList name="CRGP-Player"/>
+<mruList name="CRGP-Game-Developer"/>
+<mruList name="CRGP-Platform-Developer"/>
 <mruList name="CRGP-Plugs-Developer"/>
 </workingSetManager>

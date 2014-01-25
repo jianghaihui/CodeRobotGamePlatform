@@ -1,0 +1,123 @@
+package com.crgp.game.client;
+
+import java.io.InputStream;
+import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.crgp.game.client.message.ActionMessage;
+import com.crgp.game.client.message.DataMessage;
+import com.crgp.game.client.message.Message;
+import com.crgp.game.client.util.IOUtil;
+
+public class Client {
+	public static final String SEND = "SEND";
+	public static final String RECEIVE = "RECEIVE";
+
+	public static final String IP = "127.0.0.1";
+	public static final int PORT = 15000;
+
+	private Socket sendClient;
+	private Socket receiveClient;
+
+	private Map<String, Action> actionMap = new HashMap<String, Action>();
+
+	private final String UID;
+
+	public Client(String UID) throws Exception {
+		this.UID = UID;
+
+		System.out.println(UID + " SendClient进行握手");
+		try {
+			sendClient = new Socket(IP, PORT);
+			sendClient.setKeepAlive(true);
+
+			// 握手
+			sendClient.getOutputStream().write((SEND + ":" + UID).getBytes());
+		} catch (Exception e) {
+			throw new Exception("通讯服务客户端错误！");
+		}
+		System.out.println(UID + " SendClient握手成功");
+
+		System.out.println(UID + " ReceiveClient进行握手");
+		try {
+			receiveClient = new Socket(IP, PORT);
+			receiveClient.setKeepAlive(true);
+
+			// 握手
+			receiveClient.getOutputStream().write(
+					(RECEIVE + ":" + UID).getBytes());
+
+			new Thread(new ReceiveClientProcesser()).start();
+		} catch (Exception e) {
+			throw new Exception("通讯服务客户端错误！");
+		}
+		System.out.println(UID + " ReceiveClient握手成功");
+	}
+
+	public void registAction(String name, Action action) {
+		actionMap.put(name, action);
+	}
+
+	public DataMessage send(Message message) {
+		DataMessage dataMessage = null;
+		System.out.println(UID + " 发送请求信息 : " + message.getMessage());
+		try {
+			sendClient.getOutputStream().write(message.getMessage().getBytes());
+			sendClient.getOutputStream().flush();
+
+			if (message.hasReceipt()) {
+				System.out.println(UID + " 有返回数据，等待数据返回");
+				InputStream is = sendClient.getInputStream();
+
+				String cmd = IOUtil.read(is);
+
+				System.out.println(UID + " 收到返回数据：" + cmd);
+
+				dataMessage = (DataMessage) Message.createMessage(cmd);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println(UID + " 发送请求信息完成");
+		return dataMessage;
+	}
+
+	class ReceiveClientProcesser implements Runnable {
+		@Override
+		public void run() {
+			try {
+				InputStream is = receiveClient.getInputStream();
+				while (true) {
+					String cmd = IOUtil.read(is);
+					System.out.println(UID + " 收到请求信息：" + cmd);
+
+					ActionMessage actionMessage = (ActionMessage) Message
+							.createMessage(cmd);
+					Action action = actionMap
+							.get(actionMessage.getActionName());
+					Map<String, String> result = action.execute(actionMessage);
+
+					if (actionMessage.hasReceipt()) {
+						System.out.println(UID + " 有返回值，构建返回数据");
+
+						DataMessage dataMessage = new DataMessage(actionMessage
+								.getTargetType(), actionMessage.getTargetId(),
+								actionMessage.getSourceType(), actionMessage
+										.getSourceId());
+						dataMessage.setDatas(result);
+
+						System.out.println(UID + " 将返回数据回写到流中");
+						receiveClient.getOutputStream().write(
+								dataMessage.getMessage().getBytes());
+						receiveClient.getOutputStream().flush();
+					}
+
+					Thread.sleep(10);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}

@@ -1,0 +1,9 @@
+package com.crgp.server.util;
+
+import java.io.InputStream;
+
+public class IOUtil {
+	public static String read(InputStream is) {
+
+	}
+}

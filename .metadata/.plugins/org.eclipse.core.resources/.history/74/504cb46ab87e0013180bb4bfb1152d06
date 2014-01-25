@@ -1,0 +1,5 @@
+package com.crgp.server.util;
+
+public class ByteUtils {
+
+}

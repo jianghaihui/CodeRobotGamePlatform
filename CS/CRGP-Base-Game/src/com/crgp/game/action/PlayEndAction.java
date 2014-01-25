@@ -18,6 +18,7 @@ public class PlayEndAction extends Action {
 		int code = Integer.parseInt(message.getParam("code"));
 		if (game.getPlayCode() == code) {
 			game.playEnd(message.getParams());
+			game.endPlay();
 		} else {
 			System.out.println("过时的PlayEndAction");
 		}

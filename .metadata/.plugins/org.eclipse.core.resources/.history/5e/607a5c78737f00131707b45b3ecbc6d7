@@ -1,0 +1,158 @@
+package com.crgp.fivechess.game;
+
+import java.awt.Point;
+import java.util.Map;
+
+import javax.swing.JPanel;
+
+import com.crgp.game.BaseGame;
+import com.xjiang.fivechess.game.ui.FiveChessView;
+
+public class FiveChessGame extends BaseGame {
+	private FiveChessView view;
+
+	private boolean isEnd = false;
+
+	private int[] robot_type = new int[] { FiveChessView.BLACK_TYPE, FiveChessView.WHITE_TYPE };
+
+	private Thread mainThread;
+
+	@Override
+	public String GameUID() {
+		return "CRGP-FiveChess-Game";
+	}
+
+	@Override
+	public String getName() {
+		return "五子棋";
+	}
+
+	@Override
+	public JPanel createView() {
+		view = new FiveChessView();
+		return view;
+	}
+
+	@Override
+	public boolean isEnd() {
+		return isEnd;
+	}
+
+	@Override
+	public void launch(Map<String, String> params) {
+		view.init();
+		view.removeEvent();
+
+		isEnd = false;
+		for (BaseRobot robot : robots) {
+			if (robot != null) {
+				((FiveChessRobot) robot).setGame(this);
+			}
+		}
+	}
+
+	@Override
+	public int playerCount() {
+		return 2;
+	}
+
+	@Override
+	public void run(final long space, final long step) {
+		mainThread = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				int i = 0;
+				while (true) {
+					// 等待另一个玩家或者机器人落子后切换状态
+					while (!view.isWin() && view.getCurrType() != robot_type[i]) {
+						try {
+							Thread.sleep(0);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+
+					if (view.isWin()) {
+						isEnd = true;
+						break;
+					}
+
+					final BaseRobot robot = robots[i];
+					if (robot == null) {
+						view.addEvent();
+					} else {
+						view.removeEvent();
+
+						final Thread robotThread = new Thread(new Runnable() {
+							@Override
+							public void run() {
+								robot.play(0);
+							}
+						});
+
+						// 监控线程,等待一个单步时间,如果机器人没有在单步时间内结束,则强制结束机器人线程
+						final Thread controlThread = new Thread(new Runnable() {
+							@Override
+							public void run() {
+								try {
+									Thread.sleep(step);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+								if (robotThread.isAlive()) {
+									System.out.println("Stop");
+									robotThread.stop();
+								}
+							}
+						});
+
+						robotThread.start();
+						controlThread.start();
+					}
+
+					// 等待一个命令间隔
+					try {
+						Thread.sleep(space);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+
+					i = (i + 1) % robots.length;
+				}
+			}
+		});
+
+		mainThread.start();
+	}
+
+	@Override
+	public void runOne() {
+
+	}
+
+	public int[][] getMap() {
+		return view.getMap();
+	}
+
+	public Point getLastClick() {
+		return view.getLastClick();
+	}
+
+	public int getCurrType() {
+		return view.getCurrType();
+	}
+
+	public void click(int x, int y) {
+		boolean result = view.click(x, y);
+		if (result) {
+			Thread.currentThread().stop();
+
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+}

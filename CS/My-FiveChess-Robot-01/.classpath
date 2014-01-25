@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="libs/crgp.base.client.java.jar"/>
+	<classpathentry kind="lib" path="libs/crgp.base.game.jar"/>
+	<classpathentry kind="lib" path="libs/crgp.base.robot.java.jar"/>
+	<classpathentry kind="lib" path="libs/crgp.platform.jar"/>
+	<classpathentry kind="lib" path="libs/crgp.server.jar"/>
+	<classpathentry kind="lib" path="libs/crgp.xjiang.fivechess.game.jar"/>
+	<classpathentry kind="lib" path="libs/crgp.xjiang.fivechess.robot.jar"/>
+	<classpathentry kind="lib" path="plibs/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="plibs/jaxen-1.1.1.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

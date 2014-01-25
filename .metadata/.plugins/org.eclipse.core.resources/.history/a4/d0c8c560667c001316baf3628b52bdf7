@@ -1,0 +1,7 @@
+package com.crgp.robot;
+
+public class RobotLauncher {
+	public static void main(String[] args) {
+		
+	}
+}

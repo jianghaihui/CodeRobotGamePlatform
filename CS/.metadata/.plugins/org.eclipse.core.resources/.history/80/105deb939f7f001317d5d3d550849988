@@ -1,0 +1,19 @@
+package com.jhs.fivechess.robot;
+
+import java.util.Map;
+
+import com.xjiang.fivechess.robot.FiveChessRobot;
+
+public class FiveChessRobot01 extends FiveChessRobot{
+
+	@Override
+	public Map<String, String> play() {
+		return null;
+	}
+
+	@Override
+	public String RobotUID() {
+		return "jhs_fivechess_robot_01";
+	}
+
+}

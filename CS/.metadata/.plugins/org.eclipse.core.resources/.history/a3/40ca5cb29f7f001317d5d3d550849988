@@ -1,0 +1,42 @@
+package com.jhs.fivechess.robot;
+
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.xjiang.fivechess.robot.FiveChessRobot;
+
+public class FiveChessRobot01 extends FiveChessRobot{
+
+	@Override
+	public void play() {
+		int[][] map = getMap();
+
+		Point p = null;
+ 
+
+		ArrayList<Point> ps = new ArrayList<Point>();
+		for (int i = 0; i < map.length; i++) {
+			for (int j = 0; j < map[i].length; j++) {
+				if (map[i][j] == 0) {
+					ps.add(new Point(j, i));
+				}
+			}
+		}
+
+		int ram = (int) (Math.random() * ps.size());
+
+		p = ps.get(ram);
+
+		Map<String, String> resultMap = new HashMap<String, String>();
+		resultMap.put("x", p.x + "");
+		resultMap.put("y", p.y + "");
+	}
+
+	@Override
+	public String RobotUID() {
+		return "jhs_fivechess_robot_01";
+	}
+
+}

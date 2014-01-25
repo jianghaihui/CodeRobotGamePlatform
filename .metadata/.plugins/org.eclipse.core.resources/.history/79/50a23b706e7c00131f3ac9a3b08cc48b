@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--定义project文件的文件名与默认执行目标 -->
+<project default="dist" name="CodeRobotGamePlatform">
+	<!--添加描述 -->
+	<description>Code Robot Game Platform</description>
+	<!--添加属性,相当于文件级的全局变量,此处用于设置目录名称 -->
+	<property name="src-dir" location="src" />
+	<property name="build-dir" location="build" />
+	<property name="dist-dir" location="dist" />
+	<!--创建目标,操作为创建文件夹 -->
+	<target name="init">
+		<tstamp />
+		<mkdir dir="${build-dir}" />
+		<mkdir dir="${dist-dir}" />
+	</target>
+	<!--创建目标compile,操作为编译src目录下的.java文件并输出.class文件到build目录 -->
+	<target name="compile" depends="init clean">
+		<javac srcdir="${src-dir}" destdir="${build-dir}" classpath="libs/crgp.base.client.java.jar;libs/crgp.base.robot.java.jar"/>
+	</target>
+	<!--创建目标dist,操作为打包.class文件并输出到dist目录,打包.java文件并输出到dist目录 -->
+	<target name="dist" depends="compile">
+		<jar destfile="${dist-dir}/crgp.xjiang.mine.robot.jar" basedir="${build-dir}" />
+	</target>
+	<!--创建目标clean,操作为清空build与dist目录 -->
+	<target name="clean">
+		<delete dir="${build-dir}" />
+		<delete dir="${dist-dir}" />
+	</target>
+
+</project>

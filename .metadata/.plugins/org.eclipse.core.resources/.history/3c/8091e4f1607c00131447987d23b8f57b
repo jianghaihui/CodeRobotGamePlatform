@@ -1,0 +1,4 @@
+<RobotList>
+	<Robot name="jhs_mine_robot_01" class="com.jhs.mine.robot.MineRobot01" />
+	<Robot name="jhs_mine_robot_02" class="com.jhs.mine.robot.MineRobot02" />
+</RobotList>

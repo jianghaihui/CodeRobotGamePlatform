@@ -1,0 +1,63 @@
+package com.crgp.game.client.message;
+
+public abstract class Message {
+	public static final String SOURCE_TYPE_GAME = "SOURCE_TYPE_GAME";
+	public static final String SOURCE_TYPE_ROBOT = "SOURCE_TYPE_ROBOT";
+
+	protected String sourceType;
+	protected String sourceId;
+	protected String targetType;
+	protected String targetId;
+	protected String type;
+	protected boolean hasReceipt = false;
+
+	public String getSourceType() {
+		return sourceType;
+	}
+
+	public String getSourceId() {
+		return sourceId;
+	}
+
+	public String getTargetType() {
+		return targetType;
+	}
+
+	public String getTargetId() {
+		return targetId;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setHasReceipt(boolean hasReceipt) {
+		this.hasReceipt = hasReceipt;
+	}
+
+	public boolean hasReceipt() {
+		return hasReceipt;
+	}
+
+	public abstract String getMessage();
+
+	public static Message createmessage(String message) {
+
+		String tmp[] = message.split(";");
+		String sourceType = tmp[0].split(":")[0];
+		String sourceId = tmp[0].split(":")[1];
+		String targetType = tmp[1].split(":")[0];
+		String targetId = tmp[1].split(":")[1];
+
+		String action = tmp[2].split(":")[1];
+		actionName = action.split("?")[0];
+		if (action.split("?").length > 1) {
+			String ps[] = action.split("?")[1].split("&");
+			for (int i = 0; i < ps.length; i++) {
+				addParam(ps[i].split("=")[0], ps[i].split("=")[1]);
+			}
+		}
+
+	}
+
+}

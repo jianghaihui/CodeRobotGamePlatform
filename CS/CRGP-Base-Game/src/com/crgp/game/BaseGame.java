@@ -69,8 +69,7 @@ public abstract class BaseGame {
 					if (monitorTimer - unit <= 0) {
 						monitorTimer = -1;
 						isPlayable = false;
-						System.out.println("监控线程 ：超时 " + maxPlayTime + " - "
-								+ monitorTimer);
+						System.out.println("监控线程 ：超时 " + maxPlayTime + " - " + monitorTimer);
 					} else {
 						monitorTimer -= unit;
 						try {
@@ -122,6 +121,16 @@ public abstract class BaseGame {
 	 */
 	public abstract JPanel createView();
 
+	/**
+	 * 人工玩家开始方法，由子类实现。子类需要在该方法中启动人工进行游戏的功能，如事件等相关逻辑。<BR>
+	 */
+	public abstract void playerBegin();
+
+	/**
+	 * 人工玩家结束方法，由子类实现。子类需要在该方法中关闭人工进行游戏的功能，如事件等相关逻辑。<BR>
+	 */
+	public abstract void playerEnd();
+
 	public void launch(Map<String, String> params) {
 		isPlayable = false;
 		playCode = 0;
@@ -166,8 +175,8 @@ public abstract class BaseGame {
 					while (true) {
 						isPlayable = true;
 
-						playCode++;
 						for (int i = 0; i < robots.length; i++) {
+							playCode++;
 							String robot = robots[i];
 							play(robot, playCode);
 						}
@@ -228,7 +237,14 @@ public abstract class BaseGame {
 	 */
 	public abstract boolean isEnd();
 
-	public void playEnd(Map<String, String> playResult) {
+	public abstract void playEnd(Map<String, String> playResult);
+
+	/**
+	 * 结束单步游戏.<BR>
+	 * 机器人代码执行时,在playEndAction中,调用完由游戏实现类实现的playEnd方法后悔自动调用该方法.<BR>
+	 * 人工玩家进行游戏时,游戏子类应该根据游戏自身的逻辑,在玩家进行"一步"人工操作后,调用该方法
+	 */
+	public void endPlay() {
 		isPlayable = false;
 	}
 
@@ -312,12 +328,15 @@ public abstract class BaseGame {
 	 * @param code
 	 */
 	public synchronized void play(String robotUID, int code) {
-		ActionMessage actionMessage = new ActionMessage(Message.TYPE_GAME,
-				GameUID(), Message.TYPE_ROBOT, robotUID);
-		actionMessage.setActionName("play");
-		actionMessage.addParam("code", code + "");
-		actionMessage.setHasReceipt(false);
+		if (robotUID != null) {
+			ActionMessage actionMessage = new ActionMessage(Message.TYPE_GAME, GameUID(), Message.TYPE_ROBOT, robotUID);
+			actionMessage.setActionName("play");
+			actionMessage.addParam("code", code + "");
+			actionMessage.setHasReceipt(false);
 
-		client.send(actionMessage);
+			client.send(actionMessage);
+		} else {
+			playerBegin();
+		}
 	}
 }

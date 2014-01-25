@@ -1,0 +1,126 @@
+package com.crgp.server;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
+
+import com.crgp.game.client.message.ActionMessage;
+import com.crgp.game.client.message.Message;
+import com.crgp.server.bean.Client;
+import com.crgp.server.util.IOUtil;
+
+public class Server implements Runnable {
+	public static final String SEND = "SEND";
+	public static final String RECEIVE = "RECEIVE";
+
+	public static final int PORT = 15000;
+
+	private ServerSocket server;
+
+	private ArrayList<Client> sendClientList = new ArrayList<Client>();
+	private ArrayList<Client> receiveClientList = new ArrayList<Client>();
+
+	public Server() {
+		try {
+			server = new ServerSocket(PORT);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void run() {
+		while (true) {
+			try {
+				Socket s = server.accept();
+
+				InputStream is = s.getInputStream();
+
+				String message = IOUtil.read(is);
+
+				String UID = message.split(":")[1];
+				Client client = new Client(UID, s);
+
+				if (message.startsWith(SEND)) {
+					sendClientList.add(client);
+
+					System.out.println("[Server]"+"服务器接收到握手信号 ：SendClient ：" + message);
+					new Thread(new SendClientProcesser(client)).start();
+				} else if (message.startsWith(RECEIVE)) {
+					receiveClientList.add(client);
+
+					System.out.println("服务器接收到握手信号 ：ReceiveClient ：" + message);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	class SendClientProcesser implements Runnable {
+		private Client client;
+
+		public SendClientProcesser(Client client) {
+			super();
+			this.client = client;
+		}
+
+		@Override
+		public void run() {
+			while (true) {
+				// 从SendClient中接收到请求消息，
+				// 验证消息是否合法,目前只是验证如果发送端和接收端类型相同,则非法.
+				// 如果消息非法,不进行转发.
+				// 根据targetID，在ReceiveClientList中寻找对应的接收端.
+				// 将消息直接转发过去
+				InputStream is;
+				try {
+					// 获取到请求消息
+					is = client.getSocket().getInputStream();
+
+					String cmd = IOUtil.read(is);
+					System.out.println("--------------服务器消息处理开始--------------");
+
+					System.out.println("服务器接收到消息 ：" + cmd);
+
+					ActionMessage message = (ActionMessage) Message
+							.createMessage(cmd);
+
+					if (message.getSourceType().equals(message.getTargetType())) {
+						continue;
+					}
+
+					for (Client c : receiveClientList) {
+						// 找到转发对象
+						if (c.getUID().equals(message.getTargetId())) {
+							System.out.println("找到转发对象 ：" + c.getUID());
+							// 转发消息
+							Socket s = c.getSocket();
+							s.getOutputStream().write(cmd.getBytes());
+							s.getOutputStream().flush();
+
+							System.out.println("转发完成 ");
+							// 如果有返回值，等待返回数据
+							if (message.hasReceipt()) {
+								System.out.println("有返回值，等待返回数据");
+								cmd = IOUtil.read(s.getInputStream());
+
+								System.out.println("收到返回数据 ：" + cmd);
+								// 将返回至发送回去
+								client.getSocket().getOutputStream().write(
+										cmd.getBytes());
+								System.out.println("f回送返回数据成功");
+							}
+							break;
+						}
+					}
+					System.out.println("--------------服务器消息处理结束--------------");
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,19 @@
+package com.crgp.robot.xml.bean;
+
+public class RobotBean {
+	private String UID;
+	private String launcher;
+
+	public String getUID() {
+		return UID;
+	}
+
+	public void setUID(String uID) {
+		UID = uID;
+	}
+
+	@Override
+	public String toString() {
+		return UID;
+	}
+}

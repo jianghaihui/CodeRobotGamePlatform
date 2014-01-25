@@ -6,7 +6,7 @@
 	</list>
 	<section name="WorkbenchPreferenceDialogSettings">
 		<item value="69" key="DIALOG_Y_ORIGIN"/>
-		<item value="1053" key="DIALOG_X_ORIGIN"/>
+		<item value="509" key="DIALOG_X_ORIGIN"/>
 	</section>
 	<section name="NewWizardAction">
 		<item value="org.eclipse.jdt.ui.wizards.NewClassCreationWizard" key="NewWizardSelectionPage.STORE_SELECTED_ID"/>

@@ -1,0 +1,260 @@
+package com.xjiang.mine.game.ui;
+
+import java.awt.Color;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
+
+public class MineView extends JPanel {
+
+	private static final long serialVersionUID = 5638842516033003621L;
+
+	private int blank_size = 20;
+
+	private int x_size = 30;
+	private int y_size = 30;
+	private int mine_size = 99;
+
+	private int marge_size = 10;
+
+	private boolean isInitData = false;
+
+	private boolean isFail = false;
+
+	private JButton oldClick;
+	private Border oldBorder;
+
+	/**
+	 * -1:有地雷，0-N参考信息
+	 */
+	private int[][] game = new int[y_size][x_size];
+	/**
+	 * -1:未知，0-N参考信息
+	 */
+	private int[][] map = new int[y_size][x_size];
+
+	private JButton[][] buttonMap = new JButton[y_size][x_size];
+
+	private boolean eventable = false;
+
+	public void init() {
+		for (int i = 0; i < y_size; i++) {
+			for (int j = 0; j < x_size; j++) {
+				map[i][j] = -1;
+				game[i][j] = 0;
+			}
+		}
+
+		isInitData = false;
+		isFail = false;
+		initUI();
+		initEvent();
+	}
+
+	private void initData(int x, int y) {
+		ArrayList<Point> ps = new ArrayList<Point>();
+		for (int i = 0; i < y_size; i++) {
+			for (int j = 0; j < x_size; j++) {
+				if (j == x && i == y) {
+					continue;
+				}
+				ps.add(new Point(j, i));
+			}
+		}
+
+		for (int i = 0; i < mine_size; i++) {
+			int ram = (int) (Math.random() * ps.size());
+			Point p = ps.remove(ram);
+			game[p.y][p.x] = -1;
+
+			if (p.y + 1 < y_size && game[p.y + 1][p.x] != -1)
+				game[p.y + 1][p.x] = game[p.y + 1][p.x] + 1;
+
+			if (p.y - 1 >= 0 && game[p.y - 1][p.x] != -1)
+				game[p.y - 1][p.x] = game[p.y - 1][p.x] + 1;
+
+			if (p.x + 1 < x_size && game[p.y][p.x + 1] != -1)
+				game[p.y][p.x + 1] = game[p.y][p.x + 1] + 1;
+
+			if (p.x - 1 >= 0 && game[p.y][p.x - 1] != -1)
+				game[p.y][p.x - 1] = game[p.y][p.x - 1] + 1;
+
+			if (p.y + 1 < y_size && p.x - 1 >= 0 && game[p.y + 1][p.x - 1] != -1)
+				game[p.y + 1][p.x - 1] = game[p.y + 1][p.x - 1] + 1;
+
+			if (p.y + 1 < y_size && p.x + 1 < x_size && game[p.y + 1][p.x + 1] != -1)
+				game[p.y + 1][p.x + 1] = game[p.y + 1][p.x + 1] + 1;
+
+			if (p.y - 1 >= 0 && p.x + 1 < x_size && game[p.y - 1][p.x + 1] != -1)
+				game[p.y - 1][p.x + 1] = game[p.y - 1][p.x + 1] + 1;
+
+			if (p.y - 1 >= 0 && p.x - 1 >= 0 && game[p.y - 1][p.x - 1] != -1)
+				game[p.y - 1][p.x - 1] = game[p.y - 1][p.x - 1] + 1;
+		}
+
+		isInitData = true;
+	}
+
+	private void initUI() {
+		removeAll();
+		setLayout(null);
+		setSize(blank_size * x_size + marge_size * 2, blank_size * y_size + marge_size * 2);
+
+		for (int i = 0; i < y_size; i++) {
+			for (int j = 0; j < x_size; j++) {
+				final int x = j;
+				final int y = i;
+				JButton b = new JButton();
+				b.setMargin(new Insets(0, 0, 0, 0));
+				// b.setFont(new Font(Font.DIALOG, Font.TYPE1_FONT, 1));
+
+				buttonMap[y][x] = b;
+
+				b.setBounds(marge_size + j * blank_size, marge_size + i * blank_size, blank_size, blank_size);
+
+				add(b);
+			}
+		}
+	}
+
+	public void initEvent() {
+		for (int i = 0; i < y_size; i++) {
+			for (int j = 0; j < x_size; j++) {
+				final int x = j;
+				final int y = i;
+				JButton b = buttonMap[y][x];
+
+				b.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if (eventable) {
+							click(x, y);
+						}
+					}
+				});
+			}
+		}
+	}
+
+	private void loopClick(int x, int y) {
+		if (x < 0 || x >= x_size || y < 0 || y >= y_size || map[y][x] != -1) {
+			return;
+		}
+
+		JButton b = buttonMap[y][x];
+		int gameInfo = game[y][x];
+		b.setEnabled(false);
+		b.setText(gameInfo == 0 ? "" : gameInfo + "");
+		map[y][x] = gameInfo;
+
+		if (gameInfo == 0) {
+			loopClick(x + 1, y);
+			loopClick(x - 1, y);
+			loopClick(x, y + 1);
+			loopClick(x, y - 1);
+			loopClick(x + 1, y + 1);
+			loopClick(x + 1, y - 1);
+			loopClick(x - 1, y - 1);
+			loopClick(x - 1, y + 1);
+		}
+	}
+
+	public boolean isSucceed() {
+		if (!isInitData) {
+			return false;
+		}
+		for (int i = 0; i < y_size; i++) {
+			for (int j = 0; j < x_size; j++) {
+				if (map[i][j] == -1 && game[i][j] != -1) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	public boolean isFail() {
+		return isFail;
+	}
+
+	private void fail(int x, int y) {
+		isFail = true;
+		System.out.println("----------------------------------Fail----------------------------------");
+		for (int i = 0; i < y_size; i++) {
+			for (int j = 0; j < x_size; j++) {
+				JButton b = buttonMap[i][j];
+				int gameInfo = game[i][j];
+				if (gameInfo == -1) {
+					b.setText("X");
+					b.setBackground(Color.red);
+				}
+
+				if (j == x && i == y) {
+					b.setBorder(new LineBorder(Color.blue, 2));
+				}
+			}
+		}
+	}
+
+	private void succeed() {
+		System.out.println("----------------------------------Succeed----------------------------------");
+	}
+
+	
+	
+	
+	public boolean isEventable() {
+		return eventable;
+	}
+
+	public void setEventable(boolean eventable) {
+		this.eventable = eventable;
+	}
+
+	public int[][] getMap() {
+		return map.clone();
+	}
+
+	public int getX_size() {
+		return x_size;
+	}
+
+	public int getY_size() {
+		return y_size;
+	}
+
+	public int getMine_size() {
+		return mine_size;
+	}
+
+	public void click(int x, int y) {
+		// 变换一下包围框的颜色
+		oldBorder = buttonMap[y][x].getBorder();
+		buttonMap[y][x].setBorder(new LineBorder(Color.blue, 2));
+		if (oldClick != null) {
+			oldClick.setBorder(oldBorder);
+		}
+		oldClick = buttonMap[y][x];
+
+		if (!isInitData) {
+			initData(x, y);
+		}
+
+		if (game[y][x] == -1) {
+			fail(x, y);
+		} else {
+			loopClick(x, y);
+			if (isSucceed()) {
+				succeed();
+			}
+		}
+	}
+}

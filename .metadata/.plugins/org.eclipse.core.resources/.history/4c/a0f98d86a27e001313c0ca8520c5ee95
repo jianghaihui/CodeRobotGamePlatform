@@ -1,0 +1,312 @@
+package com.crgp.game;
+
+import java.util.Map;
+
+import javax.swing.JPanel;
+
+import com.crgp.game.action.PlayEndAction;
+import com.crgp.game.client.Client;
+import com.crgp.game.client.message.ActionMessage;
+import com.crgp.game.client.message.Message;
+
+public abstract class BaseGame {
+	protected String[] robots;
+
+	protected Client client;
+
+	/**
+	 * 标记机器人是否可点击雷区(及调用click方法).<BR>
+	 * 赢或者输之后,isClickable为false;<BR>
+	 * 每次play方法被调用的时候,isClickable被设置为true<BR>
+	 * 每次调用click方法后,isClickable被设置为false;<BR>
+	 * 执行play代码后,如果玩家的代码执行超时,isClickable被设置为false;<BR>
+	 */
+	private boolean isPlayable = false;
+
+	/**
+	 * 机器人是否异步执行.
+	 */
+	private boolean isAsyn = true;
+
+	/**
+	 * 机器人单次执行的最大时间
+	 */
+	private long maxPlayTime;
+
+	private long monitorTimer = -1;// 监控线程计时器
+	private Thread monitorThread;// 监控线程
+	private long unit = 10;// 监控线程递减单位
+
+	/**
+	 * 运行间隔时间(运行速度)
+	 */
+	protected long runSpace;
+
+	private int playCode = 0;
+
+	public BaseGame() {
+		try {
+			client = new Client(GameUID());
+			client.registAction("playEnd", new PlayEndAction(this));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		robots = new String[playerCount()];
+
+		// 监控线程,等待一个单步时间,如果机器人没有在单步时间内结束,则强制结束机器人线程
+		monitorThread = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (true) {
+					if (monitorTimer == -1) {
+						try {
+							Thread.sleep(1);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						continue;
+					}
+					if (monitorTimer - unit <= 0) {
+						monitorTimer = -1;
+						isPlayable = false;
+						System.out.println("监控线程 ：超时 " + maxPlayTime + " - "
+								+ monitorTimer);
+					} else {
+						monitorTimer -= unit;
+						try {
+							Thread.sleep(unit);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		});
+		monitorThread.start();
+	}
+
+	/**
+	 * 返回机器人列表
+	 * 
+	 * @return
+	 */
+	public String[] getRobots() {
+		return robots;
+	}
+
+	/**
+	 * 返回游戏名
+	 * 
+	 * @return
+	 */
+	public abstract String getName();
+
+	/**
+	 * 返回游戏UID
+	 * 
+	 * @return
+	 */
+	public abstract String GameUID();
+
+	/**
+	 * 返回游戏需要的玩家数量
+	 * 
+	 * @return
+	 */
+	public abstract int playerCount();
+
+	/**
+	 * 返回游戏主界面
+	 * 
+	 * @return
+	 */
+	public abstract JPanel createView();
+
+	public abstract void launch(Map<String, String> params);
+
+	public final void run() {
+		if (isAsyn) {
+			// 如果是异步执行的,单次只有一个机器人的play代码在执行
+			// 循环所有机器人,让每个机器人按顺序依次执行play代码
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					while (true) {
+						for (int i = 0; i < robots.length; i++) {
+							String robot = robots[i];
+
+							isPlayable = true;
+							playCode++;
+							play(robot, playCode);
+							monitorTimer = getMaxPlayTime();
+
+							waitForPlay();
+
+							if (isEnd()) {
+								isPlayable = false;
+								doEnd();
+								return;
+							}
+						}
+					}
+				}
+			}).start();
+		} else {
+			// 如果不是异步执行的,单次所有机器人的play代码都同时执行
+			// 循环所有机器人,让每个机器人同时执行play代码
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					while (true) {
+						isPlayable = true;
+
+						playCode++;
+						for (int i = 0; i < robots.length; i++) {
+							String robot = robots[i];
+							play(robot, playCode);
+						}
+
+						monitorTimer = getMaxPlayTime();
+
+						waitForPlay();
+						if (isEnd()) {
+							isPlayable = false;
+							doEnd();
+							return;
+						}
+					}
+				}
+			}).start();
+		}
+	}
+
+	public final void runOneStep() {
+		if (isAsyn) {
+			// 如果是异步执行的,让每个机器人按顺序依次执行play代码
+			for (int i = 0; i < robots.length; i++) {
+				String robot = robots[i];
+
+				isPlayable = true;
+				playCode++;
+				play(robot, playCode);
+				monitorTimer = getMaxPlayTime();
+
+				if (isEnd()) {
+					isPlayable = false;
+					doEnd();
+					return;
+				}
+			}
+		} else {
+			// 如果不是异步执行的,让每个机器人同时执行play代码
+			isPlayable = true;
+
+			for (int i = 0; i < robots.length; i++) {
+				String robot = robots[i];
+				play(robot, 0);
+			}
+
+			monitorTimer = getMaxPlayTime();
+
+			if (isEnd()) {
+				isPlayable = false;
+				doEnd();
+				return;
+			}
+		}
+	}
+
+	/**
+	 * 标记游戏是否结束，赢或者输游戏都将结束
+	 */
+	public abstract boolean isEnd();
+
+	public abstract void playEnd(Map<String, String> playResult);
+
+	private void waitForPlay() {
+		// 等待上一次机器人代码执行结束
+		while (isPlayable) {
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		// 等待一个命令间隔
+		try {
+			Thread.sleep(runSpace);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void doEnd() {
+		// [TODO]游戏结束，计算游戏结果
+	}
+
+	/**
+	 * 获取运行间隔时间
+	 * 
+	 * @param runSpace
+	 */
+	public long getRunSpace() {
+		return runSpace;
+	}
+
+	/**
+	 * 设置运行间隔时间
+	 * 
+	 * @param runSpace
+	 */
+	public void setRunSpace(long runSpace) {
+		this.runSpace = runSpace;
+	}
+
+	/**
+	 * 查询机器人是否异步执行
+	 * 
+	 * @return
+	 */
+	public boolean isAsyn() {
+		return isAsyn;
+	}
+
+	/**
+	 * 设置机器人是否异步执行
+	 * 
+	 * @param isAsyn
+	 */
+	public void setAsyn(boolean isAsyn) {
+		this.isAsyn = isAsyn;
+	}
+
+	public long getMaxPlayTime() {
+		return maxPlayTime;
+	}
+
+	public void setMaxPlayTime(long maxPlayTime) {
+		this.maxPlayTime = maxPlayTime;
+	}
+
+	// -------------------------
+	// ---
+	// ---信号与槽(Signal and Slot)
+	// ---
+	// -------------------------
+	/**
+	 * [SIGNAL]要求机器人发送执行代码
+	 * 
+	 * @param code
+	 */
+	public synchronized void play(String robotUID, int code) {
+		ActionMessage actionMessage = new ActionMessage(Message.TYPE_GAME,
+				GameUID(), Message.TYPE_ROBOT, robotUID);
+		actionMessage.setActionName("play");
+		actionMessage.addParam("code", code + "");
+		actionMessage.setHasReceipt(false);
+
+		client.send(actionMessage);
+	}
+}

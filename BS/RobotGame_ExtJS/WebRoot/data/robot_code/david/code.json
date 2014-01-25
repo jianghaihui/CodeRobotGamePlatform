@@ -1,0 +1,19 @@
+{
+    "codes":
+    [
+        {
+            "game_id":"mini-game",
+            "game_name":"Mini",
+            "code_file_path":"robot_code/mini/",
+            "code_file_name":"1_mini_robot.js",
+            "code_name":"david_mini_robot_1"
+        },
+        {
+            "game_id":"snakes-game",
+            "game_name":"Snakes",
+            "code_file_path":"robot_code/snakes/",
+            "code_file_name":"1_snakes_robot.js",
+            "code_name":"test1"
+        }
+    ]
+}

@@ -1,0 +1,27 @@
+{
+    "extends": {
+        "location": "../../program.packages.json"
+    },
+    "boot": "github.com/cadorn/ace-extjs/packages/ace-editor/",
+    "contexts": {
+        "top": {
+            "github.com/cadorn/ace-extjs/packages/ace-editor/": {},
+            "github.com/cadorn/ace-extjs/packages/ace-worker/@/worker": {}
+        }
+    },
+    "packages": {
+        "github.com/cadorn/ace-extjs/packages/ace-editor/": {
+            "descriptor": {
+                "contexts": {
+                    "top": {
+                        "/main": {
+                            "include": {
+                                "github.com/cadorn/ace-extjs/packages/ace-editor/@/demo": {}
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

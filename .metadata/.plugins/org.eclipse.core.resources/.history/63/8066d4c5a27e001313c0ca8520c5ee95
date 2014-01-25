@@ -1,0 +1,26 @@
+package com.crgp.game.action;
+
+import java.util.Map;
+
+import com.crgp.game.BaseGame;
+import com.crgp.game.client.Action;
+import com.crgp.game.client.message.ActionMessage;
+
+public class PlayEndAction extends Action {
+	private BaseGame game;
+
+	public PlayEndAction(BaseGame game) {
+		this.game = game;
+	}
+
+	@Override
+	public Map<String, String> execute(ActionMessage message) throws Exception {
+		int code = Integer.parseInt(message.getParam("code"));
+		if (game.getPlayCode() == code) {
+			game.playEnd(message.getParams());
+		}else{
+			System.out.println("过时的PlayEndAction");
+		}
+		return null;
+	}
+}

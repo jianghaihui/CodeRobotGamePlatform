@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--定义project文件的文件名与默认执行目标 -->
+<project default="deploy" name="Player-Project">
+	<!--添加描述 -->
+	<description>Player-Project</description>
+	<!--添加属性,相当于文件级的全局变量,此处用于设置目录名称 -->
+	<property name="libs-dir" location="libs" />
+	<property name="base-client-java" location="../CRGP-Base-Client-Java/dist/" />
+	<property name="base-game" location="" />
+	<property name="base-robot-java" location="" />
+	<property name="platform" location="" />
+	<property name="server" location="" />
+	<property name="game" location="" />
+	<property name="robot" location="" />
+
+	<target name="deploy">
+		<copy todir="${libs-dir}" file="${basedir}/old/old1.txt1" /> 
+	</target>
+
+</project>
